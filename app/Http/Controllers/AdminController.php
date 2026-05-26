@@ -526,18 +526,25 @@ class AdminController extends Controller
     {
         $order = Order::find($id);
 
-        if ($order) {
+        if (!$order) {
+            abort(404);
+        }
 
-            //fraud check steadfst
-            $phone = $order->phone;
-            if (strlen($phone) == 11) {
-
+        $phone = $order->phone ?? '';
+        if (strlen($phone) == 11) {
+            try {
                 $order->fraud_check_steadfast = collect((new SteadfastService())->steadfast($phone));
-                $order->fraud_check_pathao = collect((new PathaoService())->pathao($phone));
-                // dd($order->fraud_check_pathao);
+            } catch (\Throwable $e) {
+                $order->fraud_check_steadfast = collect(['error' => $e->getMessage()]);
             }
 
+            try {
+                $order->fraud_check_pathao = collect((new PathaoService())->pathao($phone));
+            } catch (\Throwable $e) {
+                $order->fraud_check_pathao = collect(['error' => $e->getMessage()]);
+            }
         }
+
         $customer = $order->customer->first();
         $orderItems = Order_Item::where('order_id', $id)->paginate(10);
         $products = products::all();

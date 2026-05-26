@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="{{ asset('admin-resource/lib/filepond/filepond.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin-resource/lib/filepond/filepond-plugin-image-preview.min.css') }}">
     @livewireStyles
+    <style>[x-cloak]{display:none!important}</style>
     @stack('styles')
 </head>
 
@@ -207,6 +208,12 @@
                                     <a href="{{ route('admin.slides') }}" class="">
                                         <div class="icon"><i class="icon-image"></i></div>
                                         <div class="text">Slider</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ Request::is('admin/media*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.media.index') }}" class="">
+                                        <div class="icon"><i class="icon-folder"></i></div>
+                                        <div class="text">Media Library</div>
                                     </a>
                                 </li>
                                 <li class="menu-item {{ Request::is('admin/users*') ? 'active' : '' }}">

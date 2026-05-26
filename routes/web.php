@@ -68,6 +68,7 @@ Route::get('/order-received-custom/{id}', [CartController::class, 'order_receive
 Route::post('/cart/autosave', [CartController::class, 'orderAutosave'])->name('cart.order.autosave');
 Route::post('/cart/autosave/checkout', [CartController::class, 'orderAutosaveCheckout'])->name('cart.order.autosave.checkout');
 Route::post('/cart/ordernow', [CartController::class, 'orderNow'])->name('cart.order.now');
+Route::post('/cart/landing-order', [CartController::class, 'landingOrder'])->name('cart.landing.order');
 Route::post('/cart/purchase', [CartController::class, 'Purchase'])->name('cart.order.purchase');
 
 
@@ -226,6 +227,9 @@ Route::prefix('admin')->group(function () {
 
         // Users
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+
+        // Media Library
+        Route::get('/media', fn() => view('admin.media.index'))->name('admin.media.index');
 
         // Media
         Route::delete('/products/media/{id}', [AdminController::class, 'deleteProductMedia'])->name('admin.products.media.delete');

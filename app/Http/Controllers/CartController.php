@@ -986,6 +986,111 @@ $segment = optional($order->Order_Item()->first()?->product?->segments()->first(
         }
         return response()->json($response);
     }
+
+    public function landingOrder(Request $request)
+    {
+        $request->validate([
+            'name'              => 'required|string|max:255',
+            'phone'             => 'required|string',
+            'address'           => 'required|string',
+            'items'             => 'required|array|min:1',
+            'items.*.priceNum'  => 'required|numeric|min:0',
+            'items.*.finalPrice'=> 'required|numeric|min:0',
+            'items.*.qty'       => 'required|integer|min:1',
+        ]);
+
+        $phone = preg_replace('/\D/', '', $request->phone);
+        if (str_starts_with($phone, '88') && strlen($phone) > 11) {
+            $phone = substr($phone, 2);
+        }
+        if (strlen($phone) != 11) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'নাম্বার চেক করুন, আপনার নাম্বার ১১ ডিজিট হতে হবে',
+            ], 422);
+        }
+
+        try {
+            $items    = $request->items;
+            $subtotal = collect($items)->sum(fn($i) => $i['priceNum'] * $i['qty']);
+            $discount = collect($items)->sum(fn($i) => ($i['priceNum'] - $i['finalPrice']) * $i['qty']);
+            $total    = $subtotal - $discount;
+
+            $order = new Order();
+            $order->name           = $request->name;
+            $order->phone          = $phone;
+            $order->address        = $request->address;
+            $order->notes          = $request->note;
+            $order->subtotal       = $subtotal;
+            $order->discount       = $discount;
+            $order->total          = $total;
+            $order->fee            = 0;
+            $order->cod_percentage = '0';
+            $order->cod_charge     = '0';
+            $order->is_paid        = ($request->payment_method === 'bkash');
+            $order->status         = 'pending';
+            $order->payment_status = ($request->payment_method === 'bkash') ? 'paid' : 'unpaid';
+            $order->payment_method = $request->payment_method ?? 'cash_on_delivery';
+            $order->transaction_id = $request->trx_id;
+            $order->ip_address     = $request->server('REMOTE_ADDR');
+            $order->user_agent     = $request->server('HTTP_USER_AGENT');
+            $order->json_data      = [
+                'source'          => 'landing_page',
+                'landing_page'    => $request->landing_page ?? 'unknown',
+                'delivery_method' => $request->delivery_method,
+                'raw_items'       => $items,
+            ];
+            $order->save();
+
+            foreach ($items as $item) {
+                $productId = isset($item['product_id']) && $item['product_id'] ? (int) $item['product_id'] : null;
+                $product   = $productId ? products::find($productId) : null;
+
+                $orderItem             = new Order_Item();
+                $orderItem->order_id   = $order->id;
+                $orderItem->product_id = $productId;
+                $orderItem->price      = $item['finalPrice'];
+                $orderItem->quantity   = $item['qty'];
+                $orderItem->options    = [
+                    'package_label' => $item['label'] ?? null,
+                    'kg'            => $item['kg'] ?? null,
+                ];
+                $orderItem->save();
+
+                if ($product) {
+                    $product->quantity = max(0, (float) $product->quantity - (float) $item['qty']);
+                    if ($product->quantity <= 0) {
+                        $product->stock_status = 'out_of_stock';
+                    }
+                    $product->save();
+                }
+            }
+
+            $customer = Customer::where('phone', $phone)->first();
+            if (!$customer) {
+                $customer            = new Customer();
+                $customer->first_name = $request->name;
+                $customer->phone     = $phone;
+                $customer->address   = $request->address;
+                $customer->save();
+                HomeController::updateCustomerAddress($customer->id, $request->address);
+            }
+            $customer->orders()->attach($order->id);
+
+            return response()->json([
+                'status'   => 'success',
+                'message'  => 'অর্ডার সফলভাবে গ্রহন করা হয়েছে',
+                'order_id' => $order->id,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error('landingOrder error: ' . $th->getMessage());
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।',
+            ], 500);
+        }
+    }
+
     public function Purchase(Request $request)
     {
         $response = [];

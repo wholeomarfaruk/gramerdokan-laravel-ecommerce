@@ -6,8 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Variant extends Model
 {
-          public function main()
+    protected $fillable = [
+        'media_id',
+        'ratio',
+        'size',
+        'path',
+    ];
+
+    // ─── Relationships ───────────────────────────────────────────────────────
+
+    public function main()
     {
-        return $this->belongsTo(Media::class,'media_id');
+        return $this->belongsTo(Media::class, 'media_id');
+    }
+
+    // ─── URL helpers ─────────────────────────────────────────────────────────
+
+    public function getUrl(): string
+    {
+        return asset('storage/' . ltrim($this->path, '/'));
     }
 }

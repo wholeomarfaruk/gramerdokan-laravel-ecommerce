@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Read(//f/projects/gramerdokan-laravel-ecommerce/resources/views/**)",
-      "Read(//f/projects/gramerdokan-laravel-ecommerce/resources/views/layouts/**)"
+      "Read(//f/projects/gramerdokan-laravel-ecommerce/resources/views/layouts/**)",
+      "Bash(php artisan *)",
+      "Bash(grep -n '$data\\\\|json_data\\\\|@php\\\\|php ' f:/projects/gramer-dokan/resources/views/templates/landingpages/page1.blade.php)"
     ]
   }
 }

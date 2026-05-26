@@ -1,0 +1,402 @@
+{
+    "view_file": "templates.landingpages.season_fresh_mango",
+    "version": "1.0.0",
+    "author": "Season Fresh Mango",
+    "sections": {
+        "seo": {
+            "meta_title": "Season Fresh Mango — সরাসরি বাগান থেকে আপনার দরজায়",
+            "meta_description": "রাজশাহীর সেরা গাছপাকা আম। কেমিক্যাল মুক্ত, দ্রুত ডেলিভারি। অর্ডার করুন এখনই।",
+            "meta_image": "",
+            "favicon_url": ""
+        },
+        "hero": {
+            "logo_url": "season_fresh_mango_logo.png",
+            "bg_url": "mango_forest.jpg",
+            "badge": "সরাসরি বাগান থেকে আপনার দরজায়",
+            "type_line1_raw": "এই মৌসুমের সেরা আম",
+            "type_line1_html": "<i>এই মৌসুমের</i> <em>সেরা আম</em>",
+            "type_line2": "এখন আপনার হাতের নাগালে",
+            "subtitle": "খাঁটি দেশি আম — কোনো কেমিক্যাল নেই, কোনো কৃত্রিম রঙ নেই।<br>প্রকৃতির মিষ্টতা সরাসরি আপনার পরিবারের জন্য।",
+            "cta_text": "এখনই অর্ডার করুন →"
+        },
+        "contact": {
+            "bkash_number": "01712-345678",
+            "phone": "01712345678",
+            "whatsapp_url": "https://wa.me/8801712345678"
+        },
+        "videos": [
+            { "id": "Mi0Gji06v4I", "type": "shorts" },
+            { "id": "7cw5hFLT2jk", "type": "shorts" },
+            { "id": "dQw4w9WgXcQ", "type": "shorts" },
+            { "id": "kJQP7kiw5Fk", "type": "shorts" }
+        ],
+        "strip_images": [
+            { "src": "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=900&q=80&fit=crop", "cap": "আম বাগান" },
+            { "src": "https://images.unsplash.com/photo-1591073113125-e46713c829ed?w=900&q=80&fit=crop", "cap": "পাকা আম" },
+            { "src": "https://images.unsplash.com/photo-1553279768-865429fa0078?w=900&q=80&fit=crop", "cap": "তাজা আম" },
+            { "src": "https://images.unsplash.com/photo-1605027990121-cbae9e0642db?w=900&q=80&fit=crop", "cap": "হাতে বাছাই" },
+            { "src": "https://images.unsplash.com/photo-1580639172658-5169c0fbe2c0?w=900&q=80&fit=crop", "cap": "প্যাকেজিং" },
+            { "src": "https://images.unsplash.com/photo-1623930154261-37f0e09b417d?w=900&q=80&fit=crop", "cap": "ডেলিভারি" }
+        ],
+        "testimonials": [
+            { "src": "https://images.unsplash.com/photo-1556742205-e10c9486e506?w=900&q=80&fit=crop", "cap": "রাহেলা বেগম — ঢাকা" },
+            { "src": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=900&q=80&fit=crop", "cap": "করিম সাহেব — চট্টগ্রাম" },
+            { "src": "https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=900&q=80&fit=crop", "cap": "তানভীর হোসেন — সিলেট" },
+            { "src": "https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=900&q=80&fit=crop&hue=20", "cap": "নাসিমা আক্তার — রাজশাহী" },
+            { "src": "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=900&q=80&fit=crop", "cap": "জামিল আহমেদ — খুলনা" },
+            { "src": "https://images.unsplash.com/photo-1517495306984-f84210f9daa8?w=900&q=80&fit=crop", "cap": "শাহিন সার্চি — নারায়ণগঞ্জ" },
+            { "src": "https://images.unsplash.com/photo-1556742212-5b321f3c261b?w=900&q=80&fit=crop", "cap": "সাদিয়া ইসলাম — ময়মনসিংহ" },
+            { "src": "https://images.unsplash.com/photo-1554224312-3f1e90b2d8e3?w=900&q=80&fit=crop", "cap": "রুমানা আক্তার — বরিশাল" }
+        ],
+        "products": {},
+        "packages": [
+            {
+                "kg": "৫", "label": "পারিবারিক প্যাক", "price": "৳ ৬৫০", "priceNum": 650,
+                "badge": null, "desc": "ছোট পরিবারের জন্য আদর্শ", "product_id": null,
+                "default_selected": false, "default_qty": 1,
+                "offers": {
+                    "home":   { "type": "flat",    "value": 30 },
+                    "pickup": { "type": "flat",    "value": 60 }
+                }
+            },
+            {
+                "kg": "১০", "label": "কর্পোরেট গিফট বক্স", "price": "৳ ১,২০০", "priceNum": 1200,
+                "badge": "জনপ্রিয়", "desc": "অফিস গিফটের সেরা পছন্দ", "product_id": null,
+                "default_selected": true, "default_qty": 1,
+                "offers": {
+                    "home":   { "type": "flat",    "value": 50 },
+                    "pickup": { "type": "percent", "value": 7  }
+                }
+            },
+            {
+                "kg": "১২", "label": "কর্পোরেট গিফট বক্স", "price": "৳ ১,৪৫০", "priceNum": 1450,
+                "badge": null, "desc": "প্রিমিয়াম গিফট প্যাকেজিং", "product_id": null,
+                "default_selected": false, "default_qty": 1,
+                "offers": {
+                    "home":   { "type": "flat",    "value": 80 },
+                    "pickup": { "type": "percent", "value": 8  }
+                }
+            },
+            {
+                "kg": "২০", "label": "কর্পোরেট গিফট বক্স", "price": "৳ ২,৩০০", "priceNum": 2300,
+                "badge": null, "desc": "বড় পরিবার বা অফিসের জন্য", "product_id": null,
+                "default_selected": false, "default_qty": 1,
+                "offers": {
+                    "home":   { "type": "percent", "value": 5  },
+                    "pickup": { "type": "percent", "value": 10 }
+                }
+            },
+            {
+                "kg": "২২", "label": "কর্পোরেট গিফট বক্স", "price": "৳ ২,৫০০", "priceNum": 2500,
+                "badge": "বেস্ট ভ্যালু", "desc": "সবচেয়ে সাশ্রয়ী বড় বক্স", "product_id": null,
+                "default_selected": false, "default_qty": 1,
+                "offers": {
+                    "home":   { "type": "percent", "value": 6  },
+                    "pickup": { "type": "percent", "value": 12 }
+                }
+            },
+            {
+                "kg": "২৪", "label": "কর্পোরেট গিফট বক্স", "price": "৳ ২,৭০০", "priceNum": 2700,
+                "badge": null, "desc": "সর্বোচ্চ পরিমাণ, বিশেষ ছাড়", "product_id": null,
+                "default_selected": false, "default_qty": 1,
+                "offers": {
+                    "home":   { "type": "flat",    "value": 200 },
+                    "pickup": { "type": "percent", "value": 12  }
+                }
+            }
+        ],
+        "footer": {
+            "brand": "🥭 Season Fresh Mango",
+            "copyright": "© ২০২৫ সিজন ফ্রেশ ম্যাঙ্গো",
+            "facebook_url": "#",
+            "whatsapp_url": "#"
+        }
+    },
+    "edit_sections": {
+        "seo": {
+            "label": "SEO Settings",
+            "order": 1,
+            "collapsible": true,
+            "fields": {
+                "meta_title": {
+                    "type": "text",
+                    "label": "Meta Title",
+                    "placeholder": "Season Fresh Mango — সরাসরি বাগান থেকে",
+                    "rules": "required|string|max:70",
+                    "key": "seo.meta_title"
+                },
+                "meta_description": {
+                    "type": "textarea",
+                    "label": "Meta Description",
+                    "placeholder": "রাজশাহীর সেরা গাছপাকা আম।",
+                    "rules": "required|string|max:160",
+                    "key": "seo.meta_description"
+                },
+                "meta_image": {
+                    "type": "text",
+                    "label": "Meta Image URL",
+                    "rules": "nullable|string",
+                    "key": "seo.meta_image"
+                },
+                "favicon_url": {
+                    "type": "text",
+                    "label": "Favicon URL (.ico / .png)",
+                    "rules": "nullable|string",
+                    "key": "seo.favicon_url"
+                }
+            }
+        },
+        "hero": {
+            "label": "Hero Section",
+            "order": 2,
+            "collapsible": true,
+            "fields": {
+                "logo_url": {
+                    "type": "text",
+                    "label": "Logo Image URL",
+                    "rules": "nullable|string",
+                    "key": "hero.logo_url"
+                },
+                "bg_url": {
+                    "type": "text",
+                    "label": "Hero Background Image URL",
+                    "rules": "nullable|string",
+                    "key": "hero.bg_url"
+                },
+                "badge": {
+                    "type": "text",
+                    "label": "Badge Text",
+                    "rules": "required|string|max:80",
+                    "key": "hero.badge"
+                },
+                "type_line1_raw": {
+                    "type": "text",
+                    "label": "Typewriter Line 1 (plain text)",
+                    "rules": "required|string|max:80",
+                    "key": "hero.type_line1_raw"
+                },
+                "type_line1_html": {
+                    "type": "text",
+                    "label": "Typewriter Line 1 (HTML — after typing finishes)",
+                    "rules": "required|string",
+                    "key": "hero.type_line1_html"
+                },
+                "type_line2": {
+                    "type": "text",
+                    "label": "Typewriter Line 2",
+                    "rules": "required|string|max:80",
+                    "key": "hero.type_line2"
+                },
+                "subtitle": {
+                    "type": "textarea",
+                    "label": "Hero Subtitle (HTML allowed for <br>)",
+                    "rules": "required|string",
+                    "key": "hero.subtitle"
+                },
+                "cta_text": {
+                    "type": "text",
+                    "label": "CTA Button Text",
+                    "rules": "required|string|max:60",
+                    "key": "hero.cta_text"
+                }
+            }
+        },
+        "contact": {
+            "label": "Contact & Payment",
+            "order": 3,
+            "fields": {
+                "bkash_number": {
+                    "type": "text",
+                    "label": "bKash Number",
+                    "rules": "required|string|max:20",
+                    "key": "contact.bkash_number"
+                },
+                "phone": {
+                    "type": "text",
+                    "label": "Phone Number (for Call button)",
+                    "rules": "required|string|max:20",
+                    "key": "contact.phone"
+                },
+                "whatsapp_url": {
+                    "type": "text",
+                    "label": "WhatsApp URL (for floating button, e.g. https://wa.me/8801XXXXXXXXX)",
+                    "rules": "nullable|string",
+                    "key": "contact.whatsapp_url"
+                }
+            }
+        },
+        "videos": {
+            "label": "YouTube Videos",
+            "order": 4,
+            "fields": [
+                { "type": "text", "label": "Video 1 — YouTube ID", "rules": "nullable|string", "key": "videos.0.id" },
+                { "type": "text", "label": "Video 1 — Type (shorts / landscape)", "rules": "nullable|string", "key": "videos.0.type" },
+                { "type": "text", "label": "Video 2 — YouTube ID", "rules": "nullable|string", "key": "videos.1.id" },
+                { "type": "text", "label": "Video 2 — Type", "rules": "nullable|string", "key": "videos.1.type" },
+                { "type": "text", "label": "Video 3 — YouTube ID", "rules": "nullable|string", "key": "videos.2.id" },
+                { "type": "text", "label": "Video 3 — Type", "rules": "nullable|string", "key": "videos.2.type" },
+                { "type": "text", "label": "Video 4 — YouTube ID", "rules": "nullable|string", "key": "videos.3.id" },
+                { "type": "text", "label": "Video 4 — Type", "rules": "nullable|string", "key": "videos.3.type" }
+            ]
+        },
+        "strip_images": {
+            "label": "Image Strip (Gallery)",
+            "order": 5,
+            "fields": [
+                { "type": "text", "label": "Image 1 URL", "rules": "nullable|string", "key": "strip_images.0.src" },
+                { "type": "text", "label": "Image 1 Caption", "rules": "nullable|string", "key": "strip_images.0.cap" },
+                { "type": "text", "label": "Image 2 URL", "rules": "nullable|string", "key": "strip_images.1.src" },
+                { "type": "text", "label": "Image 2 Caption", "rules": "nullable|string", "key": "strip_images.1.cap" },
+                { "type": "text", "label": "Image 3 URL", "rules": "nullable|string", "key": "strip_images.2.src" },
+                { "type": "text", "label": "Image 3 Caption", "rules": "nullable|string", "key": "strip_images.2.cap" },
+                { "type": "text", "label": "Image 4 URL", "rules": "nullable|string", "key": "strip_images.3.src" },
+                { "type": "text", "label": "Image 4 Caption", "rules": "nullable|string", "key": "strip_images.3.cap" },
+                { "type": "text", "label": "Image 5 URL", "rules": "nullable|string", "key": "strip_images.4.src" },
+                { "type": "text", "label": "Image 5 Caption", "rules": "nullable|string", "key": "strip_images.4.cap" },
+                { "type": "text", "label": "Image 6 URL", "rules": "nullable|string", "key": "strip_images.5.src" },
+                { "type": "text", "label": "Image 6 Caption", "rules": "nullable|string", "key": "strip_images.5.cap" }
+            ]
+        },
+        "testimonials": {
+            "label": "Customer Review Screenshots",
+            "order": 6,
+            "fields": [
+                { "type": "text", "label": "Review 1 Image URL", "rules": "nullable|string", "key": "testimonials.0.src" },
+                { "type": "text", "label": "Review 1 Caption", "rules": "nullable|string", "key": "testimonials.0.cap" },
+                { "type": "text", "label": "Review 2 Image URL", "rules": "nullable|string", "key": "testimonials.1.src" },
+                { "type": "text", "label": "Review 2 Caption", "rules": "nullable|string", "key": "testimonials.1.cap" },
+                { "type": "text", "label": "Review 3 Image URL", "rules": "nullable|string", "key": "testimonials.2.src" },
+                { "type": "text", "label": "Review 3 Caption", "rules": "nullable|string", "key": "testimonials.2.cap" },
+                { "type": "text", "label": "Review 4 Image URL", "rules": "nullable|string", "key": "testimonials.3.src" },
+                { "type": "text", "label": "Review 4 Caption", "rules": "nullable|string", "key": "testimonials.3.cap" },
+                { "type": "text", "label": "Review 5 Image URL", "rules": "nullable|string", "key": "testimonials.4.src" },
+                { "type": "text", "label": "Review 5 Caption", "rules": "nullable|string", "key": "testimonials.4.cap" },
+                { "type": "text", "label": "Review 6 Image URL", "rules": "nullable|string", "key": "testimonials.5.src" },
+                { "type": "text", "label": "Review 6 Caption", "rules": "nullable|string", "key": "testimonials.5.cap" },
+                { "type": "text", "label": "Review 7 Image URL", "rules": "nullable|string", "key": "testimonials.6.src" },
+                { "type": "text", "label": "Review 7 Caption", "rules": "nullable|string", "key": "testimonials.6.cap" },
+                { "type": "text", "label": "Review 8 Image URL", "rules": "nullable|string", "key": "testimonials.7.src" },
+                { "type": "text", "label": "Review 8 Caption", "rules": "nullable|string", "key": "testimonials.7.cap" }
+            ]
+        },
+        "packages": {
+            "label": "Packages & Offers",
+            "order": 7,
+            "fields": [
+                { "type": "text",     "label": "Package 1 — Weight (kg)",              "rules": "required|string",   "key": "packages.0.kg" },
+                { "type": "text",     "label": "Package 1 — Label",                    "rules": "required|string",   "key": "packages.0.label" },
+                { "type": "text",     "label": "Package 1 — Badge (e.g. জনপ্রিয়)",    "rules": "nullable|string",   "key": "packages.0.badge" },
+                { "type": "text",     "label": "Package 1 — Description",              "rules": "nullable|string",   "key": "packages.0.desc" },
+                { "type": "text",     "label": "Package 1 — Price display (e.g. ৳ ৬৫০)", "rules": "required|string", "key": "packages.0.price" },
+                { "type": "text",     "label": "Package 1 — Price (number)",           "rules": "required|numeric",  "key": "packages.0.priceNum" },
+                { "type": "text",     "label": "Package 1 — Linked Product ID",        "rules": "nullable|integer",  "key": "packages.0.product_id" },
+                { "type": "text",     "label": "Package 1 — Default Selected (true / false)", "rules": "nullable|string", "key": "packages.0.default_selected" },
+                { "type": "text",     "label": "Package 1 — Default Quantity",         "rules": "nullable|integer",  "key": "packages.0.default_qty" },
+                { "type": "text",     "label": "Package 1 — Home Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.0.offers.home.type" },
+                { "type": "text",     "label": "Package 1 — Home Offer Value",         "rules": "nullable|numeric",  "key": "packages.0.offers.home.value" },
+                { "type": "text",     "label": "Package 1 — Pickup Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.0.offers.pickup.type" },
+                { "type": "text",     "label": "Package 1 — Pickup Offer Value",       "rules": "nullable|numeric",  "key": "packages.0.offers.pickup.value" },
+
+                { "type": "text",     "label": "Package 2 — Weight (kg)",              "rules": "required|string",   "key": "packages.1.kg" },
+                { "type": "text",     "label": "Package 2 — Label",                    "rules": "required|string",   "key": "packages.1.label" },
+                { "type": "text",     "label": "Package 2 — Badge",                    "rules": "nullable|string",   "key": "packages.1.badge" },
+                { "type": "text",     "label": "Package 2 — Description",              "rules": "nullable|string",   "key": "packages.1.desc" },
+                { "type": "text",     "label": "Package 2 — Price display",            "rules": "required|string",   "key": "packages.1.price" },
+                { "type": "text",     "label": "Package 2 — Price (number)",           "rules": "required|numeric",  "key": "packages.1.priceNum" },
+                { "type": "text",     "label": "Package 2 — Linked Product ID",        "rules": "nullable|integer",  "key": "packages.1.product_id" },
+                { "type": "text",     "label": "Package 2 — Default Selected (true / false)", "rules": "nullable|string", "key": "packages.1.default_selected" },
+                { "type": "text",     "label": "Package 2 — Default Quantity",         "rules": "nullable|integer",  "key": "packages.1.default_qty" },
+                { "type": "text",     "label": "Package 2 — Home Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.1.offers.home.type" },
+                { "type": "text",     "label": "Package 2 — Home Offer Value",         "rules": "nullable|numeric",  "key": "packages.1.offers.home.value" },
+                { "type": "text",     "label": "Package 2 — Pickup Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.1.offers.pickup.type" },
+                { "type": "text",     "label": "Package 2 — Pickup Offer Value",       "rules": "nullable|numeric",  "key": "packages.1.offers.pickup.value" },
+
+                { "type": "text",     "label": "Package 3 — Weight (kg)",              "rules": "required|string",   "key": "packages.2.kg" },
+                { "type": "text",     "label": "Package 3 — Label",                    "rules": "required|string",   "key": "packages.2.label" },
+                { "type": "text",     "label": "Package 3 — Badge",                    "rules": "nullable|string",   "key": "packages.2.badge" },
+                { "type": "text",     "label": "Package 3 — Description",              "rules": "nullable|string",   "key": "packages.2.desc" },
+                { "type": "text",     "label": "Package 3 — Price display",            "rules": "required|string",   "key": "packages.2.price" },
+                { "type": "text",     "label": "Package 3 — Price (number)",           "rules": "required|numeric",  "key": "packages.2.priceNum" },
+                { "type": "text",     "label": "Package 3 — Linked Product ID",        "rules": "nullable|integer",  "key": "packages.2.product_id" },
+                { "type": "text",     "label": "Package 3 — Default Selected (true / false)", "rules": "nullable|string", "key": "packages.2.default_selected" },
+                { "type": "text",     "label": "Package 3 — Default Quantity",         "rules": "nullable|integer",  "key": "packages.2.default_qty" },
+                { "type": "text",     "label": "Package 3 — Home Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.2.offers.home.type" },
+                { "type": "text",     "label": "Package 3 — Home Offer Value",         "rules": "nullable|numeric",  "key": "packages.2.offers.home.value" },
+                { "type": "text",     "label": "Package 3 — Pickup Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.2.offers.pickup.type" },
+                { "type": "text",     "label": "Package 3 — Pickup Offer Value",       "rules": "nullable|numeric",  "key": "packages.2.offers.pickup.value" },
+
+                { "type": "text",     "label": "Package 4 — Weight (kg)",              "rules": "required|string",   "key": "packages.3.kg" },
+                { "type": "text",     "label": "Package 4 — Label",                    "rules": "required|string",   "key": "packages.3.label" },
+                { "type": "text",     "label": "Package 4 — Badge",                    "rules": "nullable|string",   "key": "packages.3.badge" },
+                { "type": "text",     "label": "Package 4 — Description",              "rules": "nullable|string",   "key": "packages.3.desc" },
+                { "type": "text",     "label": "Package 4 — Price display",            "rules": "required|string",   "key": "packages.3.price" },
+                { "type": "text",     "label": "Package 4 — Price (number)",           "rules": "required|numeric",  "key": "packages.3.priceNum" },
+                { "type": "text",     "label": "Package 4 — Linked Product ID",        "rules": "nullable|integer",  "key": "packages.3.product_id" },
+                { "type": "text",     "label": "Package 4 — Default Selected (true / false)", "rules": "nullable|string", "key": "packages.3.default_selected" },
+                { "type": "text",     "label": "Package 4 — Default Quantity",         "rules": "nullable|integer",  "key": "packages.3.default_qty" },
+                { "type": "text",     "label": "Package 4 — Home Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.3.offers.home.type" },
+                { "type": "text",     "label": "Package 4 — Home Offer Value",         "rules": "nullable|numeric",  "key": "packages.3.offers.home.value" },
+                { "type": "text",     "label": "Package 4 — Pickup Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.3.offers.pickup.type" },
+                { "type": "text",     "label": "Package 4 — Pickup Offer Value",       "rules": "nullable|numeric",  "key": "packages.3.offers.pickup.value" },
+
+                { "type": "text",     "label": "Package 5 — Weight (kg)",              "rules": "required|string",   "key": "packages.4.kg" },
+                { "type": "text",     "label": "Package 5 — Label",                    "rules": "required|string",   "key": "packages.4.label" },
+                { "type": "text",     "label": "Package 5 — Badge",                    "rules": "nullable|string",   "key": "packages.4.badge" },
+                { "type": "text",     "label": "Package 5 — Description",              "rules": "nullable|string",   "key": "packages.4.desc" },
+                { "type": "text",     "label": "Package 5 — Price display",            "rules": "required|string",   "key": "packages.4.price" },
+                { "type": "text",     "label": "Package 5 — Price (number)",           "rules": "required|numeric",  "key": "packages.4.priceNum" },
+                { "type": "text",     "label": "Package 5 — Linked Product ID",        "rules": "nullable|integer",  "key": "packages.4.product_id" },
+                { "type": "text",     "label": "Package 5 — Default Selected (true / false)", "rules": "nullable|string", "key": "packages.4.default_selected" },
+                { "type": "text",     "label": "Package 5 — Default Quantity",         "rules": "nullable|integer",  "key": "packages.4.default_qty" },
+                { "type": "text",     "label": "Package 5 — Home Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.4.offers.home.type" },
+                { "type": "text",     "label": "Package 5 — Home Offer Value",         "rules": "nullable|numeric",  "key": "packages.4.offers.home.value" },
+                { "type": "text",     "label": "Package 5 — Pickup Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.4.offers.pickup.type" },
+                { "type": "text",     "label": "Package 5 — Pickup Offer Value",       "rules": "nullable|numeric",  "key": "packages.4.offers.pickup.value" },
+
+                { "type": "text",     "label": "Package 6 — Weight (kg)",              "rules": "required|string",   "key": "packages.5.kg" },
+                { "type": "text",     "label": "Package 6 — Label",                    "rules": "required|string",   "key": "packages.5.label" },
+                { "type": "text",     "label": "Package 6 — Badge",                    "rules": "nullable|string",   "key": "packages.5.badge" },
+                { "type": "text",     "label": "Package 6 — Description",              "rules": "nullable|string",   "key": "packages.5.desc" },
+                { "type": "text",     "label": "Package 6 — Price display",            "rules": "required|string",   "key": "packages.5.price" },
+                { "type": "text",     "label": "Package 6 — Price (number)",           "rules": "required|numeric",  "key": "packages.5.priceNum" },
+                { "type": "text",     "label": "Package 6 — Linked Product ID",        "rules": "nullable|integer",  "key": "packages.5.product_id" },
+                { "type": "text",     "label": "Package 6 — Default Selected (true / false)", "rules": "nullable|string", "key": "packages.5.default_selected" },
+                { "type": "text",     "label": "Package 6 — Default Quantity",         "rules": "nullable|integer",  "key": "packages.5.default_qty" },
+                { "type": "text",     "label": "Package 6 — Home Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.5.offers.home.type" },
+                { "type": "text",     "label": "Package 6 — Home Offer Value",         "rules": "nullable|numeric",  "key": "packages.5.offers.home.value" },
+                { "type": "text",     "label": "Package 6 — Pickup Offer Type (flat / percent)", "rules": "nullable|string", "key": "packages.5.offers.pickup.type" },
+                { "type": "text",     "label": "Package 6 — Pickup Offer Value",       "rules": "nullable|numeric",  "key": "packages.5.offers.pickup.value" }
+            ]
+        },
+        "footer": {
+            "label": "Footer",
+            "order": 8,
+            "fields": {
+                "brand": {
+                    "type": "text",
+                    "label": "Brand Name",
+                    "rules": "required|string|max:60",
+                    "key": "footer.brand"
+                },
+                "copyright": {
+                    "type": "text",
+                    "label": "Copyright Text",
+                    "rules": "required|string|max:80",
+                    "key": "footer.copyright"
+                },
+                "facebook_url": {
+                    "type": "text",
+                    "label": "Facebook URL",
+                    "rules": "nullable|string",
+                    "key": "footer.facebook_url"
+                },
+                "whatsapp_url": {
+                    "type": "text",
+                    "label": "WhatsApp URL",
+                    "rules": "nullable|string",
+                    "key": "footer.whatsapp_url"
+                }
+            }
+        }
+    }
+}
