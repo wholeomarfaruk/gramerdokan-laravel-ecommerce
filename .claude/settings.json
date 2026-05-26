@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//f/projects/gramerdokan-laravel-ecommerce/resources/views/**)",
+      "Read(//f/projects/gramerdokan-laravel-ecommerce/resources/views/layouts/**)"
+    ]
+  }
+}

@@ -1,0 +1,417 @@
+{
+    "view_file": "templates.landingpages.page1",
+    "sections": {
+        "seo": {
+            "meta_title": "Zaynah – Our First Eid Icon | Seldom",
+            "meta_description": "প্রিমিয়াম ফেব্রিক, স্টাইলিশ ডিজাইন ও ক্যাশ অন ডেলিভারি সুবিধাসহ Zaynah Eid Collection",
+            "meta_image": "/uploads/landing/meta/zaynah-meta.jpg"
+        },
+        "hero": {
+            "title": "✨🌙 Zaynah — Our First Eid Icon 🌙✨",
+            "description": "এই ঈদে শুরু হোক নতুন স্টাইলের গল্প Zaynah 💛 এর সাথে — Seldom-এর প্রথম Eid release, যা আপনার উৎসবকে করবে আরও বিশেষ ও এলিগ্যান্ট। গ্রেসফুল প্রিন্ট, সফট প্রিমিয়াম ফ্যাব্রিক এবং টাইমলেস ডিজাইন আপনাকে দেবে ক্লাসি ও কমফোর্টেবল লুক। Eid day-তে স্টাইল ও আরামের পারফেক্ট কম্বিনেশন — Zaynah।",
+            "features": [
+                "Premium Fabric",
+                "Soft Cotton",
+                "Comfort Fit",
+                "Cash Delivery",
+                "Elegant Floral",
+                "Classy Look",
+                "Limited Stock",
+                "Luxury Finish",
+                "Kashmiri Silk",
+                "Eid Special",
+                "Fast Delivery",
+                "Timeless Style"
+            ],
+            "cta_text": "অর্ডার করুন",
+            "cta_icons": [
+                "whatsapp",
+                "phone"
+            ],
+            "video": {
+                "embed_type": "facebook",
+                "embed_code": "https%3A%2F%2Fwww.facebook.com%2Freel%2F1555837552798947%2F"
+            }
+        },
+        "promo_banner_top": {
+            "image": "https://i.postimg.cc/kg2z4Dqj/101545d06.jpg",
+            "link": "#order"
+        },
+        "product_gallery": {
+            "type": "swiper",
+            "images": [
+                "https://i.postimg.cc/XJGTzJDv/IMG_5667_jpg.jpg",
+                "https://i.postimg.cc/qRh95RZh/IMG_5668_jpg.jpg",
+                "https://i.postimg.cc/DZJtMZY4/IMG_5670_jpg.jpg",
+                "https://i.postimg.cc/85Jq05nd/IMG_5671_jpg.jpg"
+            ]
+
+        },
+        "why_us": {
+            "title": "কেন আমরাই সেরা",
+            "items": [
+                {
+                    "icon": "ribbon",
+                    "title": "অথেন্টিক ডিজাইন",
+                    "text": " ইউনিক ও এক্সক্লুসিভ ডিজাইনের ড্রেস, যা আপনাকে দেবে এলিগ্যান্ট ও স্টাইলিশ লুক"
+                },
+                {
+                    "icon": "crown",
+                    "title": "প্রিমিয়াম কোয়ালিটি",
+                    "text": " ইম্পোর্টেড সফট ফ্যাব্রিক ও ফাইন ফিনিশিং — কমফোর্ট ও ক্লাসের পারফেক্ট কম্বিনেশন"
+                },
+                {
+                    "icon": "clock-rotate-left",
+                    "title": "এক্সচেঞ্জ পলিসি",
+                    "text": "যেকোন সমস্যার ক্ষেত্রে ২৪ ঘন্টার মধ্যে জানালে এক্সচেঞ্জ সুবিধা প্রযোজ্য"
+                },
+                {
+                    "icon": "truck",
+                    "title": "ক্যাশ অন ডেলিভারি",
+                    "text": "পণ্য হাতে পেয়ে তারপর পেমেন্ট করার সুবিধা — সারাদেশে ডেলিভারি সুবিধা"
+                }
+            ]
+        },
+        "promo_banner_middle": {
+            "image": "https://i.postimg.cc/kg2z4Dqj/101545d06.jpg"
+        },
+        "reviews": {
+            "title": "কাস্টমার রিভিউ",
+            "items": [
+                {
+                    "image": "https://i.postimg.cc/vmBR5Xrp/IMG_5634_jpg.jpg"
+                },
+                {
+                    "image": "https://i.postimg.cc/vmBR5Xrp/IMG_5634_jpg.jpg"
+                },
+                {
+                    "image": "https://i.postimg.cc/vmBR5Xrp/IMG_5634_jpg.jpg"
+                },
+                {
+                    "image": "https://i.postimg.cc/vmBR5Xrp/IMG_5634_jpg.jpg"
+                }
+            ],
+            "cta_text": "অর্ডার করুন"
+        },
+        "faq": {
+            "title": "সচরাচর জিজ্ঞাসা প্রশ্নাবলি",
+            "items": [
+                {
+                    "question": "কোন ফেব্রিক দিয়ে তৈরি?",
+                    "answer": "প্রিমিয়াম কটন ও সিল্ক ফেব্রিক ব্যবহার করা হয়েছে।"
+                },
+                {
+                    "question": "কয়দিনে ডেলিভারি পাবো?",
+                    "answer": "ঢাকার ভিতরে ১–২ দিন, ঢাকার বাইরে ২–৪ দিন।"
+                },
+                {
+                    "question": "রিটার্ন পলিসি কী?",
+                    "answer": "ডেলিভারি চার্জ প্রদান সাপেক্ষে রিটার্ন করা যাবে।"
+                }
+            ]
+        },
+        "related_gallery": {
+            "title": "SELDOM গ্যালারি",
+            "items": [
+                {
+                    "image": "https://i.postimg.cc/5t0c8p51/IMG_5632_jpg.jpg",
+                    "caption": "সেলিভারি সুলিদি"
+                },
+                {
+                    "image": "https://i.postimg.cc/XJGTzJDv/IMG_5667_jpg.jpg",
+                    "caption": "সেলিভারি সুলিজি"
+                },
+                {
+                    "image": "https://i.postimg.cc/TwLZ4wHw/IMG_5669_jpg.jpg",
+                    "caption": "সেলিভারি সুলিভি"
+                },
+                {
+                    "image": "https://i.postimg.cc/85Jq05nd/IMG_5671_jpg.jpg",
+                    "caption": "সেলিভারি সুলিভি"
+                },
+                {
+                    "image": "https://i.postimg.cc/DZJtMZY4/IMG_5670_jpg.jpg",
+                    "caption": "সেলিভারি সুলিভি"
+                },
+                {
+                    "image": "https://i.postimg.cc/vmBR5Xrp/IMG_5634_jpg.jpg",
+                    "caption": "সেলিভারি সুলিভি"
+                }
+            ]
+        },
+        "order_section": {
+            "title": "অর্ডার করুন এখুনি"
+        },
+        "products": [
+            {
+                "id": 1,
+                "is_primary": true
+            }
+        ]
+
+    },
+    "edit_sections": {
+        "seo": {
+            "label": "SEO Settings",
+            "order": 1,
+            "collapsible": true,
+            "fields": {
+                "meta_title": {
+                    "type": "text",
+                    "label": "Meta Title",
+                    "placeholder": "Best 3 Piece Dress in Bangladesh",
+                    "rules": "required|string|max:60",
+                    "key": "seo->meta_title"
+                },
+                "meta_description": {
+                    "type": "textarea",
+                    "label": "Meta Description",
+                    "placeholder": "Premium quality 3 piece dress with fast delivery",
+                    "rules": "required|string|max:160",
+                    "key": "seo->meta_description"
+                },
+                "meta_image": {
+                    "type": "text",
+                    "label": "Meta Image",
+                    "rules": "nullable|min:3",
+                    "key": "seo->meta_image"
+                }
+            }
+        },
+        "hero": {
+            "label": "Hero Section",
+            "order": 2,
+            "collapsible": true,
+            "fields": {
+                "title": {
+                    "type": "text",
+                    "label": "Main Heading",
+                    "rules": "required|string|max:120",
+                    "key": "hero->title"
+                },
+                "description": {
+                    "type": "textarea",
+                    "label": "Description",
+                    "placeholder": "write something..",
+                    "rules": "required|string|max:160",
+                    "key": "hero->description"
+                },
+                "embed_code": {
+                    "type": "textarea",
+                    "label": "Video Embed Code (FB / YouTube)",
+                    "rules": "nullable|string",
+                    "key": "hero->video->embed_code"
+                },
+                "features": {
+                    "label": "Features",
+                    "child": true,
+                    "repeatable": true,
+                    "fields":[
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->0"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->1"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->2"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->3"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->4"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->5"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->6"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->7"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->8"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->9"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->10"
+                        },
+                        {
+                            "label": "Feature Item",
+                            "type":"text",
+                            "rules": "nullable",
+                            "key": "hero->features->11"
+                        }
+                    ]
+                }
+
+            }
+        },
+        "product_gallery": {
+            "label": "Slider Images",
+            "order": 3,
+            "fields": [
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->0->image"
+                },
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->1->image"
+                },
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->2->image"
+                },
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->4->image"
+                },
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->5->image"
+                },
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->6->image"
+                },
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->7->image"
+                },
+                {
+                    "type": "text",
+                    "label": "Slider Image",
+                    "rules": "required|array",
+                    "key": "product_gallery->images->8->image"
+                }
+            ]
+        },
+        "features": {
+            "label": "Why We Are Best",
+            "order": 3,
+            "repeatable": true,
+            "min": 1,
+            "max": 6,
+            "item_label": "Feature Item",
+            "fields": {
+                "icon": {
+                    "type": "text",
+                    "label": "Icon Class",
+                    "placeholder": "bi bi-check-circle",
+                    "rules": "nullable|string",
+                    "key": "features->icon"
+                },
+                "text": {
+                    "type": "text",
+                    "label": "Feature Text",
+                    "rules": "required|string|max:100",
+                    "key": "features->text"
+                }
+            }
+        },
+        "gallery": {
+            "label": "Product Gallery",
+            "order": 4,
+            "type": "gallery",
+            "max": 10,
+            "rules": "nullable|array",
+            "ui": {
+                "preview": true,
+                "sortable": true
+            },
+            "fields": {
+                "image": {
+                    "type": "text",
+                    "label": "Image URL",
+                    "rules": "required|url",
+                    "key": "gallery->images"
+                }
+            }
+        },
+        "products": {
+            "label": "Assign Product",
+            "order": 5,
+            "fields": {
+                "id": {
+                    "type": "text",
+                    "label": "Product",
+                    "rules": "required|integer",
+                    "key": "products->id"
+                },
+                "is_primary": {
+                    "type": "text",
+                    "label": "Is Primary",
+                    "rules": "required|boolean",
+                    "key": "products->is_primary"
+                }
+            }
+        },
+        "reviews": {
+            "label": "Customer Reviews",
+            "order": 6,
+            "repeatable": true,
+            "max": 10,
+            "item_label": "Review",
+            "fields": {
+                "image": {
+                    "type": "text",
+                    "label": "Image URL",
+                    "rules": "nullable|url",
+                    "key": "reviews->items->image"
+                }
+            }
+        }
+    }
+}

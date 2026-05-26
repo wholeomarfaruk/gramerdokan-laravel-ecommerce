@@ -1,0 +1,81 @@
+/* ── Admin Panel Custom Overrides ───────────────────────────────── */
+
+/* Mobile logo max-width */
+#logo_header_mobile {
+    max-width: 190px;
+}
+
+/* Wide data tables need a minimum width so columns don't collapse */
+.wg-table.table-all-user > * {
+    min-width: 1260px;
+}
+
+/* Product name cell: thumbnail + text side by side */
+.pname {
+    display: flex;
+    gap: 13px;
+}
+
+/* Thumbnail wrapper inside table rows */
+.table-striped .image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Action icon centering */
+.view-icon {
+    width: 20px;
+    margin: 0 auto;
+}
+
+/* Table cell baseline — clean, readable */
+.table-bordered > :not(caption) > * > * {
+    font-size: 14px;
+    line-height: 1.6;
+    vertical-align: middle;
+    border-color: #e9ecef;
+}
+
+/* Pagination — reasonable sizing */
+.wgp-pagination svg { height: 20px; }
+.wgp-pagination p  { font-size: 14px; }
+
+.pagination {
+    margin-left: 16px;
+}
+.pagination .page-link {
+    padding: 0.45rem 0.75rem;
+    font-size: 14px;
+}
+
+/* FilePond upload fieldset inside form-style-1
+   form-style-1 turns every fieldset into a flex-row (label | input).
+   Upload fields need a column stack so FilePond gets full width. */
+form.form-style-1 fieldset.col-upload {
+    flex-direction: column;
+    align-items: stretch;
+}
+form.form-style-1 fieldset.col-upload > .body-title {
+    max-width: none;
+}
+form.form-style-1 fieldset.col-upload .filepond--root {
+    min-height: 150px;
+    margin-bottom: 0;
+}
+
+/* SweetAlert2 confirm button (project uses SweetAlert2, not v1) */
+.swal2-confirm {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+.swal2-confirm:hover,
+.swal2-confirm:active {
+    background-color: #b02a37 !important;
+    border-color: #a52834 !important;
+}
