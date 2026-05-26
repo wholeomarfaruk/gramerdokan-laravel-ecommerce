@@ -1256,7 +1256,7 @@ END COMMENT -->
 
           <div class="bkash-num-row">
             <span class="bkash-num-label">Personal</span>
-            <span class="bkash-num" id="bkashNum">{{ $data->contact->bkash_number ?? '01712-345678' }}</span>
+            <span class="bkash-num" id="bkashNum">{{ $data->contact->bkash_number ?? '01341-696476' }}</span>
             <button type="button" class="bkash-copy" onclick="copyBkashNum(this)">কপি</button>
           </div>
 

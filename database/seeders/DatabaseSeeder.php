@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Developer Omar',
             'role' => 'admin',
-            'email' => 'admin@seldomfashion.com',
-            'password' => Hash::make('@NewAdmin2025'),
+            'email' => 'admin@gramerdokan.com.bd',
+            'password' => Hash::make('password'),
         ]);
         $this->call([
             CountrySeeder::class,

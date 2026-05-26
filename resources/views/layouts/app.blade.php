@@ -135,7 +135,7 @@
     <header id="header-area" class="shadow bg-white">
         <div class="container-fluid px-0">
             <div class="header_top">
-                <p>আমাদের যে কোন পণ্য অর্ডার করতে কল বা WhatsApp করুন: +8801893-620392</p>
+                <p>আমাদের যে কোন পণ্য অর্ডার করতে কল বা WhatsApp করুন: +8801341-696476</p>
             </div>
         </div>
         <style>
@@ -254,7 +254,7 @@
                         <a href="#" class="social_icon" style="text-decoration:none;" target="_blank">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
-                        <a href="https://wa.me/8801893620392" class="social_icon" style="text-decoration:none;"
+                        <a href="https://wa.me/8801341696476" class="social_icon" style="text-decoration:none;"
                             target="_blank">
                             <i class="fa-brands fa-whatsapp" style="color: rgb(37, 211, 102);"></i>
                         </a>
@@ -285,8 +285,8 @@
                 <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="footer_item footer_item1">
                         <h2>Contact Us</h2>
-                        <p><span><i class="fa-solid fa-phone"></i></span> +8801893-620392</p>
-                        <p><span><i class="fa-solid fa-envelope"></i></span>info@greenleavesbd.com</p>
+                        <p><span><i class="fa-solid fa-phone"></i></span> +8801341696476</p>
+                        <p><span><i class="fa-solid fa-envelope"></i></span>info@gramerdokan.com.bd</p>
                         <p><span><i class="fa-solid fa-location-dot"></i></span>Dhaka, Bangladesh</p>
 
                     </div>
@@ -312,7 +312,7 @@
         </div>
     </footer>
     <section id="sticky_components" class="sticky_components">
-        <a href="https://api.whatsapp.com/send?phone=+8801622351266&text=আমার%20কিছু%20প্রশ্ন%20ছিল"
+        <a href="https://api.whatsapp.com/send?phone=+8801341696476&text=আমার%20কিছু%20প্রশ্ন%20ছিল"
             target="_blank" class="whatsapp_api_btn">
             <img src="https://favouriterange.com/asset/img/icons/whatsapp.png" alt="">
         </a>
