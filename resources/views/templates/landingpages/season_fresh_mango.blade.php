@@ -1267,7 +1267,6 @@ END COMMENT -->
             <li><span class="bkash-step-n">৪</span> Reference: <strong>আপনার মোবাইল নম্বর</strong></li>
             <li><span class="bkash-step-n">৫</span> সফল হলে SMS এ পাওয়া Transaction ID নিচে দিন</li>
           </ol>
-
           <div class="form-group" style="margin-bottom:0">
             <label>Transaction ID (TrxID) *</label>
             <input type="text" id="fTrx" placeholder="যেমন: 9A7B2C4D5E" autocomplete="off">
