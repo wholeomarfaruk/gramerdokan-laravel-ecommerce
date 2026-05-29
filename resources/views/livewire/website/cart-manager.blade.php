@@ -11,7 +11,7 @@
     <div data-mini-cart-items class="d-grid gap-3">
         @forelse ($cart->items as $item)
             <div class="d-flex gap-3 border rounded-3 p-3">
-                <img src="{{ asset('storage/images/products/' . $item->product->image) }}"
+                <img src="{{ $item->product->getImageFullUrl() ?? '' }}"
                     alt="{{ $item->product->name ?? 'Product image' }}" width="64" height="64"
                     class="rounded-3 object-fit-cover" style="width: 64px;">
 

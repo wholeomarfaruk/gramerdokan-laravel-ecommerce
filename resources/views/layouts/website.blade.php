@@ -4,11 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('page_title', 'Seldom Fashion')</title>
+    <title>@yield('page_title', $site['site_name'] ?? 'Gramer Dokan')</title>
     @yield('meta_data')
     @stack('meta')
     <!-- Favicon -->
+    @if(!empty($site['favicon']))
+    <link rel="icon" type="image/png" href="{{ asset('storage/' . $site['favicon']) }}">
+    @else
     <link rel="icon" type="image/png" href="{{ asset('frontend/img/seldom-rounded.png') }}">
+    @endif
     <!-- font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
@@ -90,7 +94,7 @@
                 };
 
 
-                ttq.load('D6IQ9H3C77U5KIUERMS0');
+                ttq.load('{{ config('conversionapi.tiktok_pixel_id') }}');
                 ttq.page();
             }(window, document, 'ttq');
         </script>
@@ -110,7 +114,7 @@
                 j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
                 f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', 'GTM-5XWHPZQH');
+            })(window, document, 'script', 'dataLayer', '{{ config('conversionapi.gtm_id') }}');
         </script>
         <!-- End Google Tag Manager -->
     @else
@@ -122,7 +126,7 @@
     @if (app()->environment('production'))
         <!-- Production Environment -->
         <!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5XWHPZQH" height="0" width="0"
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('conversionapi.gtm_id') }}" height="0" width="0"
                 style="display:none;visibility:hidden"></iframe></noscript>
         <!-- End Google Tag Manager (noscript) -->
     @else
@@ -150,8 +154,12 @@
 
             <div class="container">
                 <a class="navbar-brand" href="/">
-                    <img src="{{ asset('frontend/img/logo-transparent.png') }}" alt="" style="width:50px; ">
-                    Seldom Fashion</a>
+                    @if(!empty($site['header_logo']))
+                    <img src="{{ asset('storage/' . $site['header_logo']) }}" alt="{{ $site['site_name'] ?? '' }}" style="width:50px;">
+                    @else
+                    <img src="{{ asset('frontend/img/logo-transparent.png') }}" alt="" style="width:50px;">
+                    @endif
+                    {{ $site['site_name'] ?? 'Seldom Fashion' }}</a>
                 <div class="d-flex align-items-center gap-3">
                     <button type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                         aria-controls="offcanvasRight" role="button"

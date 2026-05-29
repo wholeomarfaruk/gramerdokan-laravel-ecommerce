@@ -1,11 +1,13 @@
 @extends('layouts.app')
 @section('segment', $segment ?? '')
-@section('page_title', ($category->name ?? 'Category') . ' | Seldom Fashion')
+@section('page_title', ($category->name ?? 'Category') . ' | ' . ($site['site_name'] ?? 'Gramer Dokan'))
 @push('meta')
     @php
-        $metaDesc  = $category->description ?? 'Shop ' . ($category->name ?? '') . ' collection at Seldom Fashion. Premium quality clothing at the best price.';
+        $_sn       = $site['site_name'] ?? 'Gramer Dokan';
+        $_fb       = !empty($site['favicon']) ? asset('storage/'.$site['favicon']) : asset('frontend/img/seldom-rounded.png');
+        $metaDesc  = $category->description ?? 'Shop ' . ($category->name ?? '') . ' collection at ' . $_sn . '. Premium quality clothing at the best price.';
         $metaDesc  = \Illuminate\Support\Str::limit(strip_tags((string) $metaDesc), 155);
-        $metaImage = $category->image ? asset('images/category/' . $category->image) : asset('frontend/img/seldom-rounded.png');
+        $metaImage = $category->getImageUrl() ?? $_fb;
         $metaUrl   = url()->current();
     @endphp
     <meta name="description" content="{{ $metaDesc }}">
@@ -13,14 +15,14 @@
     <link rel="canonical" href="{{ $metaUrl }}">
 
     <meta property="og:type"        content="website">
-    <meta property="og:title"       content="{{ ($category->name ?? 'Category') . ' | Seldom Fashion' }}">
+    <meta property="og:title"       content="{{ ($category->name ?? 'Category') . ' | ' . $_sn }}">
     <meta property="og:description" content="{{ $metaDesc }}">
     <meta property="og:image"       content="{{ $metaImage }}">
     <meta property="og:url"         content="{{ $metaUrl }}">
-    <meta property="og:site_name"   content="Seldom Fashion">
+    <meta property="og:site_name"   content="{{ $_sn }}">
 
     <meta name="twitter:card"        content="summary_large_image">
-    <meta name="twitter:title"       content="{{ ($category->name ?? 'Category') . ' | Seldom Fashion' }}">
+    <meta name="twitter:title"       content="{{ ($category->name ?? 'Category') . ' | ' . $_sn }}">
     <meta name="twitter:description" content="{{ $metaDesc }}">
     <meta name="twitter:image"       content="{{ $metaImage }}">
 @endpush
@@ -32,7 +34,7 @@
         <div class="container">
             <div class="sec-header">
                 @if ($category->image)
-                    <img src="{{ asset("images/category/{$category->image}") }}"
+                    <img src="{{ $category->getImageUrl() ?? '' }}"
                          alt="{{ $category->name }}"
                          class="w-100 rounded"
                          style="max-height:320px;object-fit:cover;display:block;">
@@ -50,7 +52,7 @@
 
                             <div class="p-img-box">
                                 <a href="{{ $product?->url }}">
-                                    <img src="{{ asset('storage/images/products/' . $product->image) }}" alt="">
+                                    <img src="{{ $product->getImageFullUrl() ?? '' }}" alt="">
                                 </a>
                             </div>
                             <div class="p-info">

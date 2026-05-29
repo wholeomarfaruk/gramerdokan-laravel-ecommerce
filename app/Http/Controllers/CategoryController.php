@@ -55,44 +55,26 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'=> 'required',
-
+            'name'  => 'required',
+            'image' => 'nullable|string',
         ]);
 
-        // return $request->all();
+        // Use submitted slug if provided, otherwise auto-generate
+        $slug = $request->filled('slug')
+            ? Str::slug($request->slug)
+            : Str::slug($request->name);
 
-        // Check if the slug already exists
-        $slug = Str::slug($request->name);
-        if(Category::where('slug', $slug)->exists()){
-            $slug .= '-';
+        if (Category::where('slug', $slug)->exists()) {
+            $slug .= '-' . time();
         }
 
         $category = new Category();
-        $category->name = $request->name;
-        $category->slug = $slug;
-        if($request->has('is_active')) {
-            $category->is_active = $request->is_active;
-        }
-
-        if($request->hasFile('image')) {
-            // Check if the directory exists
-            if(!file_exists(public_path('images/category/'))) {
-                // Create the directory if it does not exist
-                mkdir(public_path('images/category/'), 0777, true);
-            }
-
-            // Check if the directory has read and write permissions
-            if(!is_writable(public_path('images/category/'))) {
-                chmod(public_path('images/category/'), 0777);
-            }
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-            $image->move(public_path('images/category'), $imageName);
-            $category->image = $imageName;
-        }
-        $category->parent_id    = $request->parent_id ?: null;
-        $category->description  = $request->description;
+        $category->name             = $request->name;
+        $category->slug             = $slug;
+        $category->is_active        = $request->is_active ?? 1;
+        $category->image            = $request->filled('image') ? $request->image : null;
+        $category->parent_id        = $request->parent_id ?: null;
+        $category->description      = $request->description;
         $category->is_homepage_show = $request->is_homepage_show ?? 0;
         $category->is_show_in_menu  = $request->is_show_in_menu ?? 0;
         $category->display_order    = $request->display_order ?? 0;
@@ -129,6 +111,7 @@ class CategoryController extends Controller
         $request->validate([
             'name'   => 'required',
             'status' => 'required',
+            'image'  => 'nullable|string',
         ]);
 
         $id = $request->id;
@@ -143,22 +126,16 @@ class CategoryController extends Controller
             $slug .= '-' . $id;
         }
 
-        $imageName = $category->image;
-        if ($request->input('remove_image') == '1' && $category->image) {
-            if (file_exists(public_path('images/category/' . $category->image))) {
-                unlink(public_path('images/category/' . $category->image));
-            }
+        // Determine final image value
+        if ($request->input('remove_image') == '1') {
+            // AJAX removeImage already deleted the file; just clear the column
             $imageName = null;
-        } elseif ($request->hasFile('image')) {
-            if (!file_exists(public_path('images/category/'))) {
-                mkdir(public_path('images/category/'), 0777, true);
-            }
-            if ($category->image && file_exists(public_path('images/category/' . $category->image))) {
-                unlink(public_path('images/category/' . $category->image));
-            }
-            $file      = $request->file('image');
-            $imageName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/category'), $imageName);
+        } elseif ($request->filled('image')) {
+            // New image picked from media library
+            $imageName = $request->image;
+        } else {
+            // No change — keep existing
+            $imageName = $category->image;
         }
 
         $category->update([

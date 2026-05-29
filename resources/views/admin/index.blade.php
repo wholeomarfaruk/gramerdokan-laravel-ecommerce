@@ -266,8 +266,13 @@
                                 <td class="text-muted fw-semibold">{{ $i + 1 }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        @if ($product->image)
-                                            <img src="{{ asset('storage/images/products/' . $product->image) }}"
+                                        @php
+                                            $img = $product->image
+                                                ? ((str_starts_with($product->image, 'http') || str_starts_with($product->image, '/')) ? $product->image : asset('storage/images/products/' . $product->image))
+                                                : null;
+                                        @endphp
+                                        @if ($img)
+                                            <img src="{{ $img }}"
                                                  style="width:36px;height:36px;object-fit:cover;border-radius:6px;" alt="">
                                         @else
                                             <div style="width:36px;height:36px;border-radius:6px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;">

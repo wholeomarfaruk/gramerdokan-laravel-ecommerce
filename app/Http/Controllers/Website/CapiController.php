@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Website;
 
+use App\CAPI\AddToCartEvent;
 use App\CAPI\PageViewEvent;
+use App\CAPI\PurchaseEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMetaCapiEventJob;
 use Illuminate\Http\Request;
@@ -38,19 +40,50 @@ class CapiController extends Controller
 
                 $pageViewEvent = new PageViewEvent();
                 $pageViewEvent->push();
-                $pageViewEvent->set('event_id', (isset($data['event_id']) ? $data['event_id'] : null));
-                $payload = $pageViewEvent->payload();
-                SendMetaCapiEventJob::dispatch($payload)->onQueue(env('META_CAPI_QUEUE', 'metacapi'));
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $data,
-                    'request' => $payload
-                ], 200);
+                $pageViewEvent->set('event_id', $data['event_id'] ?? null);
+                SendMetaCapiEventJob::dispatch($pageViewEvent->serverPayload())->onQueue(env('META_CAPI_QUEUE', 'metacapi'));
+                return response()->json(['status' => 'success'], 200);
             }
-            // Log::info('FB Pixel CAPI after pageView Started at ' . now());
 
-            if ($request->event_name == 'view_content') {
-                // Handle ViewContent event similarly
+            if ($request->event_name == 'add_to_cart') {
+
+                $event = new AddToCartEvent();
+                $event->push(
+                    eventId:       $data['event_id'] ?? null,
+                    currency:      'BDT',
+                    contentPrice:  isset($data['value']) ? (float) $data['value'] : null,
+                    contentId:     $data['content_id'] ?? null,
+                    contentName:   $data['content_name'] ?? null,
+                    contentType:   'product',
+                    contentCategory: $segment,
+                );
+                if (!empty($data['quantity'])) {
+                    $event->set('contents', [[
+                        'id'         => $data['content_id'] ?? null,
+                        'quantity'   => (int) $data['quantity'],
+                        'item_price' => isset($data['value']) ? (float) $data['value'] : null,
+                    ]]);
+                }
+                SendMetaCapiEventJob::dispatch($event->serverPayload())->onQueue(env('META_CAPI_QUEUE', 'metacapi'));
+                return response()->json(['status' => 'success'], 200);
+            }
+
+            if ($request->event_name == 'purchase') {
+
+                $contents   = $data['contents'] ?? [];
+                $contentIds = array_values(array_filter(array_column($contents, 'id')));
+                $event = new PurchaseEvent();
+                $event->push(
+                    eventId:      $data['event_id'] ?? null,
+                    currency:     'BDT',
+                    contentPrice: isset($data['value']) ? (float) $data['value'] : null,
+                    contentIds:   $contentIds,
+                    content_type: 'product',
+                    contents:     $contents,
+                    order_id:     isset($data['order_id']) ? (string) $data['order_id'] : null,
+                );
+                SendMetaCapiEventJob::dispatch($event->serverPayload())->onQueue(env('META_CAPI_QUEUE', 'metacapi'));
+                return response()->json(['status' => 'success'], 200);
             }
 
             if ($request->event_name == 'initiate_checkout') {
@@ -80,78 +113,6 @@ class CapiController extends Controller
                 ], 200);
 
             }
-
-
-            if ($request->event_name == 'purchase') {
-                // Handle ViewContent event similarly
-
-
-                $contents = [];
-                if (isset($data['ecommerce']['items']) && count($data['ecommerce']['items']) > 0) {
-                    foreach ($data['ecommerce']['items'] as $item) {
-                        $contents[] = [
-                            'id' => $item['item_id'] ? (int) $item['item_id'] : null,
-                            'quantity' => $item['quantity'] ?? 1,
-                            'item_price' => $item['price'] ?? null,
-                        ];
-                    }
-                }
-
-                $payload = [
-                    'data' => [
-                        [
-                            'event_name' => 'Purchase',
-                            'action_source' => 'website',
-                            'event_time' => time(),
-                            'event_id' => $data['event_id'] ?? (string) Str::uuid(),
-                            'event_source_url' => !empty($data['event_source_url']) ? $data['event_source_url'] : $request->url(),
-                            'referrer_url' => !empty($data['referrer_url']) ? $data['referrer_url'] : $request->headers->get('referer'),
-
-                            'custom_data' => [
-                                'currency' => 'BDT',
-                                'value' => $data['ecommerce']['value'] ?? null,
-                                'transaction_id' => $data['ecommerce']['transaction_id'] ?? null,
-                                'contents' => $contents,
-                                'category' => $segment,
-                            ],
-                            'user_data' => [
-                                'client_user_agent' => $request->server('HTTP_USER_AGENT'),
-                                'client_ip_address' => $request->ip(),
-                                'fbp' => isset($_COOKIE['_fbp']) ? $_COOKIE['_fbp'] : null,
-                                'fbc' => !empty($data['user_data']['fbc']) ? $data['user_data']['fbc'] : (isset($_COOKIE['custom_fbc']) ? $_COOKIE['custom_fbc'] : null),
-                                'ph' => !empty($data['user_data']['phone_number']) ? $this->normalizeAndHash($data['user_data']['phone_number']) : null,
-                                'fn' => !empty($data['user_data']['first_name']) ? $this->normalizeAndHash(strtolower(trim($data['user_data']['first_name']))) : null,
-                                'ln' => !empty($data['user_data']['last_name']) ? $this->normalizeAndHash(strtolower(trim($data['user_data']['last_name']))) : null,
-                                'external_id' => !empty($data['user_data']['customer_id']) ? $this->normalizeAndHash(strtolower(trim($data['user_data']['customer_id']))) : null,
-                                'country' => $this->normalizeAndHash('bd'),
-                                'st' => $this->normalizeAndHash($data['user_data']['state'] ?? null),
-                                'ct' => $this->normalizeAndHash($data['user_data']['city'] ?? null),
-                                'zp' => $this->normalizeAndHash($data['user_data']['zipcode'] ?? null),
-                            ],
-                        ],
-                    ],
-
-                ];
-
-                $order_id = $data['ecommerce']['transaction_id'];
-                if (is_integer($order_id)) {
-                    $order = Order::find($order_id);
-                    if ($order) {
-                        if ($order->trackingEvent) {
-
-                            $order->trackingEvent()->update([
-                                'is_fired' => true,
-                                'json_data' => json_encode($payload),
-                                'event_fired_time' => now(),
-                            ]);
-                        }
-
-                    }
-                }
-
-
-            }
-            //   Log::info('FB Pixel CAPI after purchase Started at ' . now());
 
         } catch (\Exception $e) {
             Log::info('FB Pixel CAPI Calling Ends At: ' . now() . " error: " . $e->getMessage());

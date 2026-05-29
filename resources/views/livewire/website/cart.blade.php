@@ -27,7 +27,7 @@
                                     <div class="border rounded-3 p-3 mb-3" data-cart-row="{{ $item->id }}">
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-2 col-4">
-                                                <img src="{{ asset('storage/images/products/' . $item->product->image) }}"
+                                                <img src="{{ $item->product->getImageFullUrl() ?? '' }}"
                                                     alt="{{ $item->product->name ?? 'Product image' }}"
                                                     class="img-fluid rounded-3 w-100">
                                             </div>

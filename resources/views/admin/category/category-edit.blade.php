@@ -17,10 +17,18 @@
         </div>
 
         <div class="wg-box">
+            @php
+                // Backward compat: old records store just filename (public/images/category/);
+                // new ones store a full URL from the media library
+                $existingCatImage = $category->image
+                    ? (str_starts_with($category->image, 'http') || str_starts_with($category->image, '/')
+                        ? $category->image
+                        : asset('images/category/' . $category->image))
+                    : '';
+            @endphp
             <form class="form-new-product form-style-1"
-                  action="{{ route('admin.categories.update', $category->id) }}"
-                  method="POST"
-                  enctype="multipart/form-data">
+                  action="{{ route('admin.categories.update') }}"
+                  method="POST">
                 @csrf
                 @method('POST')
                 <input type="hidden" name="id" value="{{ $category->id }}">
@@ -115,28 +123,24 @@
                 {{-- Image --}}
                 <fieldset class="col-upload">
                     <div class="body-title">Category Image</div>
-
-                    {{-- Current image preview --}}
-                    @if ($category->image)
-                        <div class="d-flex align-items-center gap-3 mb-2" id="current-img-preview">
-                            <img src="{{ asset('images/category/' . $category->image) }}"
-                                 alt="Current image"
-                                 style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #e9ecef;">
-                            <div>
-                                <span class="text-muted d-block" style="font-size:13px;">Current image</span>
-                                <button type="button" id="btn-remove-cat-img"
-                                        class="btn btn-sm btn-outline-danger mt-1"
-                                        data-url="{{ route('admin.categories.image.remove', $category->id) }}">
-                                    <i class="icon-trash-2"></i> Remove
-                                </button>
-                            </div>
-                        </div>
-                    @endif
-
-                    <input type="file" id="categoryImage" name="image" accept="image/*">
+                    <input type="hidden" name="image" id="cat_image_url" value="{{ old('image', $existingCatImage) }}">
+                    <input type="hidden" name="remove_image" id="cat_remove_flag" value="0">
                     @error('image')
-                        <span class="invalid-feedback d-block mt-1"><strong>{{ $message }}</strong></span>
+                        <span class="invalid-feedback d-block mb-2"><strong>{{ $message }}</strong></span>
                     @enderror
+
+                    <div id="cat_image_preview" style="{{ $existingCatImage ? '' : 'display:none;' }} margin-bottom:10px;">
+                        <img id="cat_image_preview_img" src="{{ old('image', $existingCatImage) }}"
+                             style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;display:block;margin-bottom:6px;">
+                        <button type="button" id="cat_image_remove" class="tf-button style-1" style="font-size:12px;padding:4px 12px;">
+                            <i class="icon-x"></i> Remove
+                        </button>
+                    </div>
+                    <button type="button" id="cat_image_pick" class="tf-button style-1"
+                            style="{{ $existingCatImage ? 'display:none;' : '' }}"
+                            onclick="Livewire.dispatch('open-media-picker', { multiple: false, callbackKey: 'cat_image' })">
+                        <i class="icon-image"></i> Choose from Media Library
+                    </button>
                 </fieldset>
 
                 <div class="bot">
@@ -148,55 +152,30 @@
 
     </div>
 </div>
+
+@livewire('admin.media.media-picker')
 @endsection
 
 @push('scripts')
 <script>
-createFilePond('categoryImage', { allowMultiple: false });
+window.addEventListener('media-picker-confirmed', e => {
+    const payload = e.detail[0] ?? e.detail;
+    if (payload.callbackKey !== 'cat_image') return;
+    const single = payload.single;
+    if (!single) return;
+    document.getElementById('cat_image_url').value          = single.url;
+    document.getElementById('cat_image_preview_img').src    = single.thumbnail || single.url;
+    document.getElementById('cat_image_preview').style.display = '';
+    document.getElementById('cat_image_pick').style.display    = 'none';
+    document.getElementById('cat_remove_flag').value           = '0';
+});
 
-const btnRemove = document.getElementById('btn-remove-cat-img');
-if (btnRemove) {
-    btnRemove.addEventListener('click', function () {
-        Swal.fire({
-            title: 'Remove image?',
-            text: 'This will permanently delete the category image.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, remove',
-            cancelButtonText: 'Cancel',
-        }).then(result => {
-            if (!result.isConfirmed) return;
-
-            fetch(btnRemove.dataset.url, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json',
-                },
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('current-img-preview').remove();
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Image removed',
-                        showConfirmButton: false,
-                        timer: 2500,
-                        timerProgressBar: true,
-                    });
-                }
-            })
-            .catch(() => {
-                Swal.fire({ icon: 'error', title: 'Failed to remove image', toast: true,
-                    position: 'top-end', showConfirmButton: false, timer: 3000 });
-            });
-        });
-    });
-}
+document.getElementById('cat_image_remove').addEventListener('click', () => {
+    document.getElementById('cat_image_url').value              = '';
+    document.getElementById('cat_image_preview_img').src        = '';
+    document.getElementById('cat_image_preview').style.display  = 'none';
+    document.getElementById('cat_image_pick').style.display     = '';
+    document.getElementById('cat_remove_flag').value            = '1';
+});
 </script>
 @endpush

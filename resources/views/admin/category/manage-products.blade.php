@@ -144,7 +144,7 @@
                                         <td>{{ $pitem->id }}</td>
                                         <td class="pname">
                                             <div class="image">
-                                                <img src="{{ asset('storage/images/products/thumbnails/' . $pitem->image) }}"
+                                                <img src="{{ $pitem->getImageThumbUrl() ?? '' }}"
                                                     alt="{{ $pitem->name }}" class="image">
                                             </div>
                                             <div class="name">

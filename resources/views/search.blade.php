@@ -134,7 +134,7 @@
 
                             <div class="p-img-box">
                                 <a href="{{ route('product.show', $product->slug) }}">
-                                    <img src="{{ asset('storage/images/products/' . $product->image) }}" alt="">
+                                    <img src="{{ $product->getImageFullUrl() ?? '' }}" alt="">
                                 </a>
                             </div>
                             <div class="p-info">

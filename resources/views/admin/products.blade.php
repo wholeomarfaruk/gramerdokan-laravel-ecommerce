@@ -65,8 +65,10 @@
                                     <td>{{ $product->id }}</td>
                                     <td class="pname">
                                         <div class="image">
-                                            <img src="{{ asset('storage/images/products/thumbnails/' . $product->image) }}"
-                                                alt="{{ $product->name }}" class="image">
+                                            @if ($product->getImageThumbUrl())
+                                                <img src="{{ $product->getImageThumbUrl() }}"
+                                                    alt="{{ $product->name }}" class="image">
+                                            @endif
                                         </div>
                                         <div class="name">
                                             <a target="_blank"

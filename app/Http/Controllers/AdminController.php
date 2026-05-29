@@ -56,13 +56,21 @@ class AdminController extends Controller
     public function deleteProductMedia(int $id)
     {
         $media = Media::findOrFail($id);
-        $filePath = public_path($media->path);
 
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        // Old-style product gallery images (path includes 'storage/' prefix) — safe to delete.
+        // Media-library items (path like 'media/...') are shared: only unlink, don't delete the file.
+        if (str_starts_with($media->path, 'storage/')) {
+            $filePath = public_path($media->path);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            $media->delete();
+        } else {
+            $media->mediable_id   = null;
+            $media->mediable_type = null;
+            $media->category      = null;
+            $media->save();
         }
-
-        $media->delete();
 
         return response()->json(['success' => true]);
     }
@@ -164,52 +172,36 @@ class AdminController extends Controller
     {
         // return $request->all();
         $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
+            'name'         => 'required',
+            'price'        => 'required|numeric',
             'stock_status' => 'required|in:in_stock,out_of_stock',
-            'quantity' => 'required|integer',
-            'image' => 'mimes:jpg,jpeg,png,webp|max:2048',
-            'segment' => 'required',
+            'quantity'     => 'required|integer',
+            'image'        => 'nullable|string',
+            'segment'      => 'required',
         ]);
         $product = new products();
 
-        $product->name = $request->name;
-
-        $product->price = $request->price;
+        $product->name           = $request->name;
+        $product->price          = $request->price;
         $product->purchase_price = $request->purchase_price ?: null;
         if ($request->discount_price) {
             $product->discount_price = $request->discount_price;
         }
-        if ($request->name) {
-            $slug = Str::slug($request->name);
-            if (products::where('slug', $slug)->exists()) {
-                $slug = $slug . '-' . Carbon::now()->timestamp;
-            }
-            $product->slug = $slug;
+        $slug = Str::slug($request->name);
+        if (products::where('slug', $slug)->exists()) {
+            $slug = $slug . '-' . Carbon::now()->timestamp;
         }
-        $product->featured = $request->featured ? true : false;
-
-        if ($request->sku) {
-            $product->sku = $request->sku;
-        }
+        $product->slug        = $slug;
+        $product->featured    = $request->featured ? true : false;
+        $product->sku         = $request->sku ?: null;
         $product->is_redirected = $request->is_redirected ? true : false;
-        if($request->redirect_url){
-            $product->redirect_url = $request->redirect_url;
+        $product->redirect_url  = $request->redirect_url ?: null;
+        $product->stock_status  = $request->stock_status;
+        $product->quantity      = $request->quantity;
+
+        if ($request->filled('image')) {
+            $product->image = $request->image;
         }
-        $product->stock_status = $request->stock_status;
-
-        $product->quantity = $request->quantity;
-
-
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $extension = $image->getClientOriginalExtension();
-            $filename = Carbon::now()->timestamp . "." . $extension;
-            $this->generateProductThumbnailImage($image, $filename);
-            $product->image = $filename;
-        }
-
         if ($request->description) {
             $product->description = $request->description;
         }
@@ -221,52 +213,27 @@ class AdminController extends Controller
         }
 
         $product->save();
+
         if ($request->has('sizes')) {
-            $sizes = $request->sizes;
-            foreach ($sizes as $key => $size) {
+            foreach ($request->sizes as $size) {
                 Size::create([
                     'products_id' => $product->id,
-                    'name' => $size['size'],
-                    'quantity' => $size['qty'] ?? 0
+                    'name'        => $size['size'],
+                    'quantity'    => $size['qty'] ?? 0,
                 ]);
             }
         }
-        if ($request->hasFile('images')) {
 
-            // Store file in 'public/media'
-            $images = $request->file('images');
-            $path = 'storage/images/products/' . $product->id . '/';
-            if (!file_exists(public_path($path))) {
-                mkdir(public_path($path), 0777, true);
-            }
-            foreach ($images as $key => $file) {
-
-                // Save in media table
-
-                $media = new Media();
-                $media->filename = basename($file->getClientOriginalName());
-                $media->original_name = $file->getClientOriginalName();
-                $media->mime_type = $file->getMimeType();
-                $media->extension = $file->getClientOriginalExtension();
-                $media->size = $file->getSize();
-                $media->type = 'image';
-                $media->category = 'product_images';
-                $media->disk = 'public';
-                $media->path = $path . $file->getClientOriginalName();
-                $media->mediable_id = $product->id;
-                $media->mediable_type = products::class;
-                if ($request->has('caption')) {
-                    $media->caption = $request->input('caption');
-                }
-
-                $media->user_id = auth()->id();
-                $media->save();
-                $file->move(public_path($path), $file->getClientOriginalName());
-
-            }
-
-
+        // Link gallery images picked from the media library
+        if ($request->filled('gallery_media_ids')) {
+            Media::whereIn('id', $request->gallery_media_ids)
+                ->update([
+                    'mediable_id'   => $product->id,
+                    'mediable_type' => products::class,
+                    'category'      => 'product_images',
+                ]);
         }
+
         if ($request->has('categories')) {
             $product->categories()->attach($request->categories);
         }
@@ -305,18 +272,21 @@ class AdminController extends Controller
     {
 
         $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
+            'name'         => 'required',
+            'price'        => 'required|numeric',
             'stock_status' => 'required|in:in_stock,out_of_stock',
-            'featured' => 'boolean',
-            'quantity' => 'required|integer',
-            'image' => 'mimes:jpg,jpeg,png,webp|max:2048',
-
+            'featured'     => 'boolean',
+            'quantity'     => 'required|integer',
+            'image'        => 'nullable|string',
         ]);
+
         $product = products::find($request->id);
-        $product->name = $request->name;
-        $product->price = $request->price;
+        if (!$product) { abort(404); }
+
+        $product->name           = $request->name;
+        $product->price          = $request->price;
         $product->purchase_price = $request->purchase_price ?: null;
+
         if ($request->slug) {
             $slug = $request->slug;
             if (products::where('slug', $slug)->whereNotIn('id', [$product->id])->exists()) {
@@ -325,115 +295,56 @@ class AdminController extends Controller
             $product->slug = $slug;
         }
 
+        $product->discount_price  = $request->discount_price ?: null;
+        $product->sku             = $request->sku ?: null;
+        $product->is_redirected   = $request->is_redirected ? true : false;
+        $product->redirect_url    = $request->redirect_url ?: null;
+        $product->stock_status    = $request->stock_status;
+        $product->featured        = $request->featured ? true : false;
+        $product->quantity        = $request->quantity;
+        $product->status          = $request->has('status');
 
-        if ($request->discount_price) {
-            $product->discount_price = $request->discount_price;
+        if ($request->filled('image')) {
+            $product->image = $request->image;
         }
-        if ($request->sku) {
-            $product->sku = $request->sku;
-        }
-        $product->is_redirected = $request->is_redirected ? true : false;
-        if($request->redirect_url){
-            $product->redirect_url = $request->redirect_url;
-        }else{
-            $product->redirect_url = null;
-        }
-
-        $product->stock_status = $request->stock_status;
-        $product->featured = $request->featured ? true : false;
-        $product->quantity = $request->quantity;
         if ($request->description) {
             $product->description = $request->description;
         }
-
-        if ($request->hasFile('image')) {
-            if (File::exists(public_path('storage/images/products/thumbnails/' . $product->image))) {
-                File::delete(public_path('storage/images/products/thumbnails/' . $product->image));
-                File::delete(public_path('storage/images/products/' . $product->image));
-            }
-            $image = $request->file('image');
-            $extension = $image->getClientOriginalExtension();
-            $filename = Carbon::now()->timestamp . "." . $extension;
-            $this->generateProductThumbnailImage($image, $filename);
-            $product->image = $filename;
-        }
-
-
         if ($request->short_description) {
             $product->short_description = $request->short_description;
         }
         if ($request->yt_video_url) {
             $product->yt_video_url = $request->yt_video_url;
         }
-        if ($request->has('status')) {
-            $product->status = true;
-        } else {
-            $product->status = false;
-        }
+
         $product->save();
+
         $product->sizes()->delete();
         if ($request->has('sizes')) {
-            $sizes = $request->sizes;
-            foreach ($sizes as $key => $size) {
+            foreach ($request->sizes as $size) {
                 Size::create([
                     'products_id' => $product->id,
-                    'name' => $size['size'],
-                    'quantity' => $size['qty'] ?? 0
+                    'name'        => $size['size'],
+                    'quantity'    => $size['qty'] ?? 0,
                 ]);
             }
         }
-        if ($request->hasFile('images')) {
 
-            // Store file in 'public/media'
-            $images = $request->file('images');
-            $path = 'storage/images/products/' . $product->id . '/';
-            if (!file_exists(public_path($path))) {
-                mkdir(public_path($path), 0777, true);
-            }
-            $old_media = $product->media()->where('category', 'product_images')->get();
-            foreach ($old_media as $media) {
-                if (file_exists(public_path($media->path))) {
-                    unlink(public_path($media->path));
-                }
-                $media->delete();
-            }
-
-            foreach ($images as $key => $file) {
-
-
-                // Save in media table
-                $media = new Media();
-                $media->filename = basename($file->getClientOriginalName());
-                $media->original_name = $file->getClientOriginalName();
-                $media->mime_type = $file->getMimeType();
-                $media->extension = $file->getClientOriginalExtension();
-                $media->size = $file->getSize();
-                $media->type = 'image';
-                $media->category = 'product_images';
-                $media->disk = 'public';
-                $media->path = $path . $file->getClientOriginalName();
-                $media->mediable_id = $product->id;
-                $media->mediable_type = products::class;
-                if ($request->has('caption')) {
-                    $media->caption = $request->input('caption');
-                }
-                $media->user_id = auth()->id();
-                $media->save();
-                $file->move(public_path($path), $file->getClientOriginalName());
-
-            }
-
-
+        // Link newly picked gallery images — existing gallery is untouched
+        if ($request->filled('gallery_media_ids')) {
+            Media::whereIn('id', $request->gallery_media_ids)
+                ->update([
+                    'mediable_id'   => $product->id,
+                    'mediable_type' => products::class,
+                    'category'      => 'product_images',
+                ]);
         }
 
         if ($request->has('categories') && !empty($request->categories)) {
-            $categories = $request->categories;
-            $product->categories()->sync($categories);
-
+            $product->categories()->sync($request->categories);
         }
         if ($request->has('segment')) {
-            $segment = $request->segment;
-            $product->segments()->sync($segment);
+            $product->segments()->sync($request->segment);
             $product->save();
         }
         return redirect()->route('admin.products')->with('status', 'Product Updated Successfully');
@@ -817,26 +728,20 @@ class AdminController extends Controller
     }
     public function slideStore(Request $request)
     {
-
         $this->validate($request, [
-            'title' => 'required',
+            'title'    => 'required',
             'subtitle' => 'required',
-            'tagline' => 'required',
-            'image' => 'required|mimes:jpg,jpeg,png',
+            'tagline'  => 'required',
+            'image'    => 'required|string',
         ]);
 
         $slide = new Slide();
-        $slide->title = $request->title;
+        $slide->title    = $request->title;
         $slide->subtitle = $request->subtitle;
-        $slide->tagline = $request->tagline;
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $extension = $image->getClientOriginalExtension();
-            $filename = Carbon::now()->timestamp . "." . $extension;
-            $this->GenerateSlideThumbnailImage($image, $filename);
-            $slide->image = $filename;
-        }
+        $slide->tagline  = $request->tagline;
+        $slide->image    = $request->image;
         $slide->save();
+
         return redirect()->route('admin.slides')->with('status', 'Slide Added Successfully');
     }
 
@@ -861,29 +766,26 @@ class AdminController extends Controller
         $slide = Slide::find($id);
         return view('admin.slides-edit', compact('slide'));
     }
-    public function slideUpdate(Request $request)
+    public function slideUpdate(Request $request, $id)
     {
         $this->validate($request, [
-            'title' => 'required',
+            'title'    => 'required',
             'subtitle' => 'required',
-            'tagline' => 'required',
+            'tagline'  => 'required',
+            'image'    => 'required|string',
         ]);
-        $slide = Slide::find($request->id);
-        $slide->title = $request->title;
+
+        $slide = Slide::find($id);
+        if (!$slide) { abort(404); }
+
+        $slide->title    = $request->title;
         $slide->subtitle = $request->subtitle;
-        $slide->tagline = $request->tagline;
-        if ($request->hasFile('image')) {
-            if (File::exists(public_path('storage/images/slides/thumbnails/' . $slide->image))) {
-                File::delete(public_path('storage/images/slides/thumbnails/' . $slide->image));
-                File::delete(public_path('storage/images/slides/' . $slide->image));
-            }
-            $image = $request->file('image');
-            $extension = $image->getClientOriginalExtension();
-            $filename = Carbon::now()->timestamp . "." . $extension;
-            $this->GenerateSlideThumbnailImage($image, $filename);
-            $slide->image = $filename;
+        $slide->tagline  = $request->tagline;
+        if ($request->filled('image')) {
+            $slide->image = $request->image;
         }
         $slide->save();
+
         return redirect()->route('admin.slides')->with('status', 'Slide Updated Successfully');
     }
     public function slideDelete($id)
@@ -1157,7 +1059,7 @@ class AdminController extends Controller
 
         $json = json_decode($campaign->json_data);
 
-        // $json = json_decode(file_get_contents(base_path('resources/views/templates/landingpages/page1.json'))); // object
+        // $json = json_decode(file_get_contents(base_path('resources/views/templates/landingpages/seldom_zaynah_eid.json'))); // object
         $page = $json ?? [];
         // dd($page->sections->hero->features[0]);
         return view('admin.campaign-landing-page-edit', compact('campaign', 'page'));
@@ -1248,6 +1150,100 @@ class AdminController extends Controller
         }
         $campaign->delete();
         return redirect()->route('admin.campaigns')->with('status', 'Campaign Deleted Successfully');
+    }
+
+    public function campaignToggleStatus($id)
+    {
+        $campaign = Campaign::find($id);
+        if (!$campaign) { abort(404); }
+        $campaign->status = $campaign->status == 1 ? 0 : 1;
+        $campaign->save();
+        return response()->json(['status' => $campaign->status]);
+    }
+
+    public function campaignCopy($id)
+    {
+        $campaign = Campaign::find($id);
+        if (!$campaign) {
+            abort(404);
+        }
+        $copy = $campaign->replicate();
+        $copy->name   = $campaign->name . ' (Copy)';
+        $copy->slug   = $campaign->slug . '-copy-' . time();
+        $copy->status = 0;
+        $copy->save();
+        return redirect()->route('admin.campaigns')->with('status', 'Campaign duplicated successfully.');
+    }
+
+    /**
+     * Recursively merge $template into $campaign.
+     * Campaign values always win for existing keys; new keys/indices from template are added.
+     */
+    private function deepMergeTemplate($template, $campaign)
+    {
+        if (is_object($template) && is_object($campaign)) {
+            $result = clone $campaign;
+            foreach (get_object_vars($template) as $key => $tVal) {
+                if (property_exists($campaign, $key)) {
+                    $result->$key = $this->deepMergeTemplate($tVal, $campaign->$key);
+                } else {
+                    $result->$key = $tVal;
+                }
+            }
+            return $result;
+        }
+        if (is_array($template) && is_array($campaign)) {
+            $result = $campaign;
+            foreach ($template as $i => $tVal) {
+                if (!array_key_exists($i, $campaign)) {
+                    $result[$i] = $tVal;
+                } else {
+                    $result[$i] = $this->deepMergeTemplate($tVal, $campaign[$i]);
+                }
+            }
+            return $result;
+        }
+        return $campaign; // scalar: campaign value wins
+    }
+
+    public function campaignSyncTemplate($id)
+    {
+        $campaign = Campaign::find($id);
+        if (!$campaign) { abort(404); }
+
+        $page = LandingPage::find($campaign->landing_page_id);
+        if (!$page) {
+            return redirect()->back()->with('sync_error', 'Source landing page not found for this campaign.');
+        }
+
+        $templatePath = base_path('resources/views/' . str_replace('.', '/', $page->view_file) . '.json');
+        if (!file_exists($templatePath)) {
+            return redirect()->back()->with('sync_error', 'Template JSON file not found: ' . $page->view_file);
+        }
+
+        $template     = json_decode(file_get_contents($templatePath));
+        $campaignJson = json_decode($campaign->json_data);
+
+        if (!$template || !$campaignJson) {
+            return redirect()->back()->with('sync_error', 'Failed to parse JSON data.');
+        }
+
+        // Replace edit_sections entirely so all new field definitions appear
+        if (isset($template->edit_sections)) {
+            $campaignJson->edit_sections = $template->edit_sections;
+        }
+
+        // Deep-merge sections: keep existing filled values, add new blank slots from template
+        if (isset($template->sections)) {
+            $campaignJson->sections = isset($campaignJson->sections)
+                ? $this->deepMergeTemplate($template->sections, $campaignJson->sections)
+                : $template->sections;
+        }
+
+        $campaign->json_data = json_encode($campaignJson);
+        $campaign->save();
+
+        return redirect()->back()->with('status', 'Template synced successfully. All new fields are now available.');
     }
 
     public function landingPageView($id)

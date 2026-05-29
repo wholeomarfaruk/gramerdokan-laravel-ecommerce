@@ -16,6 +16,7 @@ class MediaPicker extends Component
     public string $typeFilter = 'image';
     public bool   $multiple   = false;
     public array  $selected   = [];
+    public string $activeTab  = 'browse'; // 'browse' | 'upload'
 
     /** JS callback key passed in when opening — returned with the picked media */
     public string $callbackKey = '';
@@ -31,13 +32,29 @@ class MediaPicker extends Component
         $this->callbackKey = $callbackKey;
         $this->selected    = [];
         $this->search      = '';
+        $this->activeTab   = 'browse';
         $this->resetPage();
         $this->isOpen = true;
     }
 
     public function close(): void
     {
-        $this->isOpen = false;
+        $this->isOpen    = false;
+        $this->activeTab = 'browse';
+    }
+
+    public function switchTab(string $tab): void
+    {
+        $this->activeTab = $tab;
+    }
+
+    // ─── After upload: refresh grid and switch back to browse ────────────────
+
+    #[On('media-uploaded')]
+    public function onMediaUploaded(): void
+    {
+        $this->activeTab = 'browse';
+        $this->resetPage();
     }
 
     // ─── Selection ───────────────────────────────────────────────────────────

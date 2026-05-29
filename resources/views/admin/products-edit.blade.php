@@ -30,8 +30,8 @@
                 </ul>
             </div>
             <!-- form-add-product -->
-            <form class="tf-section-2 form-add-product needs-validation" method="POST" enctype="multipart/form-data"
-                action="{{ route('admin.products.update') }}" novalidate>
+            <form class="tf-section-2 form-add-product" method="POST"
+                action="{{ route('admin.products.update') }}">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="id" value="{{ $product->id }}">
@@ -270,22 +270,34 @@
 
 
                 </div>
+                @php
+                    // Backward compat: old records store just filename; new ones store full URL
+                    $existingFeatured = $product->image
+                        ? (str_starts_with($product->image, 'http') || str_starts_with($product->image, '/')
+                            ? $product->image
+                            : asset('storage/images/products/thumbnails/' . $product->image))
+                        : '';
+                @endphp
                 <div class="wg-box">
                     {{-- Featured image --}}
                     <fieldset>
                         <div class="body-title mb-10">Featured image</div>
-                        @if ($product->image)
-                            <div class="mb-2 d-flex align-items-center gap-2">
-                                <img src="{{ asset('storage/images/products/thumbnails/' . $product->image) }}"
-                                    alt="Current featured" style="height:64px;width:64px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;">
-                                <span class="text-tiny text-muted">Current image — upload below to replace</span>
-                            </div>
-                        @endif
-
-                        <input type="file" id="featuredImage" name="image" accept="image/*">
+                        <input type="hidden" name="image" id="prod_image_url" value="{{ old('image', $existingFeatured) }}">
                         @error('image')
-                            <span class="text-danger text-tiny">{{ $message }}</span>
+                            <span class="text-danger text-tiny d-block mb-2">{{ $message }}</span>
                         @enderror
+                        <div id="prod_image_preview" style="{{ $existingFeatured ? '' : 'display:none;' }} margin-bottom:10px;">
+                            <img id="prod_image_preview_img" src="{{ old('image', $existingFeatured) }}"
+                                 style="height:80px;width:80px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;display:block;margin-bottom:6px;">
+                            <button type="button" id="prod_image_remove" class="tf-button style-1" style="font-size:12px;padding:4px 12px;">
+                                <i class="icon-x"></i> Remove
+                            </button>
+                        </div>
+                        <button type="button" id="prod_image_pick" class="tf-button style-1"
+                                style="{{ $existingFeatured ? 'display:none;' : '' }}"
+                                onclick="Livewire.dispatch('open-media-picker', { multiple: false, callbackKey: 'prod_featured' })">
+                            <i class="icon-image"></i> Choose from Media Library
+                        </button>
                     </fieldset>
 
                     {{-- Gallery images — existing --}}
@@ -295,8 +307,13 @@
                             <div class="body-title mb-10">Current gallery images</div>
                             <div class="d-flex flex-wrap gap-2" id="existing-gallery">
                                 @foreach ($galleryImages as $media)
+                                    @php
+                                        $thumbUrl = str_starts_with($media->path, 'storage/')
+                                            ? asset($media->path)
+                                            : $media->getThumbnailUrl();
+                                    @endphp
                                     <div class="position-relative" id="media-{{ $media->id }}" style="width:90px;">
-                                        <img src="{{ asset($media->path) }}" alt=""
+                                        <img src="{{ $thumbUrl }}" alt=""
                                             style="width:90px;height:90px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;">
                                         <button type="button"
                                             onclick="deleteGalleryImage({{ $media->id }})"
@@ -309,13 +326,14 @@
                         </fieldset>
                     @endif
 
-                    {{-- Gallery images — add new --}}
+                    {{-- Gallery images — add new from media library --}}
                     <fieldset>
                         <div class="body-title mb-10">Add gallery images</div>
-                        <input type="file" id="galleryImages" name="images[]" accept="image/*" multiple>
-                        @error('images')
-                            <span class="text-danger text-tiny">{{ $message }}</span>
-                        @enderror
+                        <div id="gallery_preview" class="d-flex flex-wrap gap-2 mb-2"></div>
+                        <button type="button" class="tf-button style-1"
+                                onclick="Livewire.dispatch('open-media-picker', { multiple: true, callbackKey: 'prod_gallery' })">
+                            <i class="icon-images"></i> Add from Media Library
+                        </button>
                     </fieldset>
                     <div class="cols gap22">
                         <fieldset class="name">
@@ -380,12 +398,51 @@
         <!-- /main-content-wrap -->
     </div>
     <!-- content area end -->
+    @livewire('admin.media.media-picker')
 @endsection
 @push('scripts')
     <script>
-        createFilePond('featuredImage', { allowMultiple: false });
-        createFilePond('galleryImages', { allowMultiple: true });
+        // ── Featured image ────────────────────────────────────────────────────
+        window.addEventListener('media-picker-confirmed', e => {
+            const payload = e.detail[0] ?? e.detail;
 
+            if (payload.callbackKey === 'prod_featured') {
+                const single = payload.single;
+                if (!single) return;
+                document.getElementById('prod_image_url').value        = single.url;
+                document.getElementById('prod_image_preview_img').src  = single.thumbnail || single.url;
+                document.getElementById('prod_image_preview').style.display = '';
+                document.getElementById('prod_image_pick').style.display    = 'none';
+            }
+
+            if (payload.callbackKey === 'prod_gallery') {
+                const grid = document.getElementById('gallery_preview');
+                const form = grid.closest('form');
+                payload.media.forEach(item => {
+                    if (form.querySelector(`input[name="gallery_media_ids[]"][value="${item.id}"]`)) return;
+                    const wrap = document.createElement('div');
+                    wrap.style.cssText = 'position:relative;width:72px;';
+                    wrap.innerHTML = `
+                        <img src="${item.thumbnail || item.url}"
+                             style="width:72px;height:72px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;">
+                        <button type="button"
+                                onclick="this.closest('div').remove(); this.closest('form').querySelector('input[value=\\'${item.id}\\']')?.remove();"
+                                style="position:absolute;top:2px;right:2px;background:#ef4444;border:none;border-radius:50%;color:#fff;width:18px;height:18px;font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+                        <input type="hidden" name="gallery_media_ids[]" value="${item.id}">
+                    `;
+                    grid.appendChild(wrap);
+                });
+            }
+        });
+
+        document.getElementById('prod_image_remove').addEventListener('click', () => {
+            document.getElementById('prod_image_url').value              = '';
+            document.getElementById('prod_image_preview_img').src        = '';
+            document.getElementById('prod_image_preview').style.display  = 'none';
+            document.getElementById('prod_image_pick').style.display     = '';
+        });
+
+        // ── Delete existing gallery image ────────────────────────────────────
         function deleteGalleryImage(mediaId) {
             if (!confirm('Remove this image?')) return;
 
@@ -411,16 +468,13 @@
         }
 
         function stringtoSlug(str) {
-            str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing spaces
-            str = str.toLowerCase();
-            str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-                .replace(/\s+/g, '-') // collapse whitespace and replace by -
-                .replace(/-+/g, '-'); // collapse dashes
-
-
-
-            $('#slug_input').val(str);
-
+            str = str.replace(/^\s+|\s+$/g, '')
+                     .toLowerCase()
+                     .replace(/[^a-z0-9 -]/g, '')
+                     .replace(/\s+/g, '-')
+                     .replace(/-+/g, '-');
+            const el = document.getElementById('slug_input');
+            if (el) el.value = str;
         }
     </script>
     <script src="https://cdn.tiny.cloud/1/hkkbs6irhd8pjbxo4xgcyy5o1lvtjcx4p843koiprxzql6dh/tinymce/8/tinymce.min.js"

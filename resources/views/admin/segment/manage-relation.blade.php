@@ -1,219 +1,134 @@
 @extends('layouts.admin')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css"
-    integrity="sha512-A81ejcgve91dAWmCGseS60zjrAdohm7PTcAjjiDWtw3Tcj91PNMa1gJ/ImrhG+DbT5V+JQ5r26KT5+kgdVTb5w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-@push('styles')
-    <style>
-        .table-striped th:nth-child(2),
-        .table-striped td:nth-child(2) {
-            width: inherit;
-            padding-bottom: inherit;
-        }
 
-        .table-striped th:nth-child(2),
-        .table-striped td:nth-child(2) {
-            width: inherit;
-            padding-bottom: inherit;
-        }
-
-        .table-striped th:nth-child(1),
-        .table-striped td:nth-child(1) {
-            width: 100px;
-            padding-bottom: inherit;
-        }
-
-        .table-striped th:nth-child(1),
-        .table-striped td:nth-child(1) {
-            width: 100px;
-            padding-bottom: inherit;
-        }
-    </style>
-    <style>
-        .tree ul {
-            list-style-type: none;
-            padding-left: 1.5rem;
-        }
-
-        .tree li {
-            margin: 0.5rem 0;
-        }
-
-        .tree-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: #f8f9fa;
-        }
-
-        .tree-item .actions {
-            flex-shrink: 0;
-        }
-
-        .tree ul ul {
-            margin-left: 2rem;
-            /* indentation for subcategories */
-        }
-    </style>
-@endpush
 @section('content')
-    <!-- content area start -->
-    <div class="main-content-inner">
-        <div class="main-content-wrap">
-            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>Categories</h3>
-                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                    <li>
-                        <a href="{{ route('admin.index') }}">
-                            <div class="text-tiny">Dashboard</div>
-                        </a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <div class="text-tiny">Categories</div>
-                    </li>
-                </ul>
-            </div>
+<div class="main-content-inner">
+    <div class="main-content-wrap">
+        <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+            <h3>Manage Products — {{ $segment->name }}</h3>
+            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                <li><a href="{{ route('admin.index') }}"><div class="text-tiny">Dashboard</div></a></li>
+                <li><i class="icon-chevron-right"></i></li>
+                <li><a href="{{ route('admin.segments') }}"><div class="text-tiny">Segments</div></a></li>
+                <li><i class="icon-chevron-right"></i></li>
+                <li><div class="text-tiny">Manage Products</div></li>
+            </ul>
+        </div>
 
-            <div class="wg-box">
-                <form class="form-new-product form-style-1 needs-validation"
-                    action="{{ route('admin.categories.assign.products', $category->id) }}" method="POST"
-                    enctype="multipart/form-data" novalidate>
-                    @csrf
+        @if(session('success'))
+            <div class="alert alert-success mb-3">{{ session('success') }}</div>
+        @endif
 
-                    <input type="hidden" hidden name="id" value="{{ $category->id }}" />
-
-
-                    <fieldset class="name">
-                        <div class="body-title">Select Products</div>
-                        <div class="select flex-grow">
-                            <select id="products" class="selectpicker @error('products') is-invalid @enderror"
-                                name="products[]" required multiple data-live-search="true" title="Choose products...">
-                                @foreach ($products as $product)
-                                    <option value="{{ $product->id }}">
-                                        {{ $product->id . ' - ' . $product->name . ' - ' . $product->discount_price ?? $product->price }}
-                                        Tk</option>
-                                @endforeach
-                            </select>
-
-                        </div>
-                        @error('products')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </fieldset>
-
-
-                    <div class="bot">
-                        <div></div>
-                        <button class="tf-button w208" type="submit">{{ __('Save') }}</button>
+        {{-- Assign products --}}
+        <div class="wg-box mb-4">
+            <h5 class="mb-3">Assign Products</h5>
+            <form action="{{ route('admin.segments.products.assign', $segment->id) }}" method="POST">
+                @csrf
+                <fieldset class="name">
+                    <div class="body-title">Select Products</div>
+                    <div class="select flex-grow">
+                        <select id="products" class="selectpicker @error('products') is-invalid @enderror"
+                            name="products[]" multiple data-live-search="true" title="Choose products...">
+                            @foreach($products as $product)
+                                <option value="{{ $product->id }}">
+                                    {{ $product->id }} — {{ $product->name }} — {{ $product->discount_price ?? $product->price }} Tk
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
-                </form>
-            </div>
-            <div class="wg-box">
-                <div class="table-responsive">
-                    @if (Session::has('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ Session::get('status') }}
-                        </div>
-                    @endif
-                    <table class="table table-striped table-bordered">
-                        <thead>
-
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>SKU</th>
-                                <th>Stock</th>
-                                <th>Quantity</th>
-                                <th>Featured</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (count($Categoryproducts) > 0)
-                                @foreach ($Categoryproducts as $pitem)
-                                    <tr>
-                                        <td>{{ $pitem->id }}</td>
-                                        <td class="pname">
-                                            <div class="image">
-                                                <img src="{{ asset('storage/images/products/thumbnails/' . $pitem->image) }}"
-                                                    alt="{{ $pitem->name }}" class="image">
-                                            </div>
-                                            <div class="name">
-                                                <a target="_blank" href="{{ route('product.show', $pitem->slug) }}"
-                                                    class="body-title-2">{{ $pitem->name }}</a>
-                                                <div class="text-tiny mt-3">{{ $pitem->slug }}</div>
-                                            </div>
-                                        </td>
-                                        <td>{{ $pitem->price }}</td>
-                                        <td>{{ $pitem->sku }}</td>
-                                        <td>{{ $pitem->stock_status }}</td>
-                                        <td>{{ $pitem->quantity }}</td>
-                                        <td>{{ $pitem->featured == 1 ? 'Yes' : 'No' }}</td>
-                                        <td>
-                                            <div class="list-icon-function">
-
-
-                                                <form
-                                                    action="{{ route('admin.categories.unassign.products', ['id' => $category->id]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <input type="hidden" name="products" value="{{ $pitem->id }}">
-                                                    <div class="item text-danger delete">
-                                                        <i class="icon-trash-2"></i>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="8" class="text-center">No products found</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                    @error('products')
+                        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                    @enderror
+                </fieldset>
+                <div class="bot mt-3">
+                    <div></div>
+                    <button class="tf-button w208" type="submit">Assign</button>
                 </div>
-            </div>
-            <div class="divider"></div>
-            <div class="flex items-center justify-between flex-wrap gap10 wgp-pagination mt-5">
-                {{-- {{ $Categoryproducts->links('pagination::bootstrap-5') }} --}}
+            </form>
+        </div>
+
+        {{-- Assigned products list --}}
+        <div class="wg-box">
+            <h5 class="mb-3">Assigned Products ({{ $segmentProducts->count() }})</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>SKU</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($segmentProducts as $product)
+                        <tr>
+                            <td>{{ $product->id }}</td>
+                            <td>
+                                <div class="flex items-center gap10">
+                                    <div class="name">
+                                        <a target="_blank" href="{{ route('product.show', [$segment->slug, $product->slug]) }}"
+                                            class="body-title-2">{{ $product->name }}</a>
+                                        <div class="text-tiny mt-1">{{ $product->slug }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ $product->discount_price ?? $product->price }} Tk</td>
+                            <td>{{ $product->sku }}</td>
+                            <td>
+                                @if($product->status)
+                                    <span class="badge bg-success rounded-pill">Active</span>
+                                @else
+                                    <span class="badge bg-danger rounded-pill">Inactive</span>
+                                @endif
+                            </td>
+                            <td>
+                                <form action="{{ route('admin.segments.products.unassign', $segment->id) }}"
+                                    method="POST" class="d-inline unassign-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="products" value="{{ $product->id }}">
+                                    <button type="button" class="btn-unassign border-0 bg-transparent text-danger" title="Remove">
+                                        <div class="item"><i class="icon-trash-2"></i></div>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center">No products assigned yet</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-
-
-    <!-- content area end -->
+</div>
 @endsection
+
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('.delete').on('click', function(e) {
-                e.preventDefault();
-                var form = $(this).closest('form');
+<script>
+    $(document).ready(function() {
+        $('#products').selectpicker();
+
+        document.querySelectorAll('.btn-unassign').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var form = this.closest('form');
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    title: 'Remove this product?',
+                    text: 'It will be unassigned from this segment.',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, remove it!'
+                }).then(function(result) {
+                    if (result.isConfirmed) form.submit();
                 });
             });
         });
-    </script>
+    });
+</script>
 @endpush

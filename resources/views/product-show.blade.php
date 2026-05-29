@@ -1,13 +1,15 @@
 @extends('layouts.app')
 @section('segment', $segment)
 
-@section('page_title', ($product->name ?? 'Product') . ' | Seldom Fashion')
+@section('page_title', ($product->name ?? 'Product') . ' | ' . ($site['site_name'] ?? 'Gramer Dokan'))
 @push('meta')
     @php
+        $_sn       = $site['site_name'] ?? 'Gramer Dokan';
         $metaName  = $product->name ?? 'Product';
-        $metaDesc  = $product->short_description ?? $product->description ?? 'Buy ' . $metaName . ' from Seldom Fashion. Premium quality clothing at the best price.';
+        $metaDesc  = $product->short_description ?? $product->description ?? 'Buy ' . $metaName . ' from ' . $_sn . '. Premium quality clothing at the best price.';
         $metaDesc  = \Illuminate\Support\Str::limit(strip_tags((string) $metaDesc), 155);
-        $metaImage = $product->image ? asset('storage/images/products/' . $product->image) : asset('frontend/img/seldom-rounded.png');
+        $metaFb    = !empty($site['favicon']) ? asset('storage/'.$site['favicon']) : asset('frontend/img/seldom-rounded.png');
+        $metaImage = $product->image ? asset('storage/images/products/' . $product->image) : $metaFb;
         $metaUrl   = url()->current();
         $metaPrice = $product->discount_price ?? $product->price ?? null;
     @endphp
@@ -17,11 +19,11 @@
 
     {{-- Open Graph --}}
     <meta property="og:type"        content="product">
-    <meta property="og:title"       content="{{ $metaName }} | Seldom Fashion">
+    <meta property="og:title"       content="{{ $metaName }} | {{ $_sn }}">
     <meta property="og:description" content="{{ $metaDesc }}">
     <meta property="og:image"       content="{{ $metaImage }}">
     <meta property="og:url"         content="{{ $metaUrl }}">
-    <meta property="og:site_name"   content="Seldom Fashion">
+    <meta property="og:site_name"   content="{{ $_sn }}">
     @if ($metaPrice)
         <meta property="product:price:amount"   content="{{ $metaPrice }}">
         <meta property="product:price:currency" content="BDT">
@@ -29,7 +31,7 @@
 
     {{-- Twitter Card --}}
     <meta name="twitter:card"        content="summary_large_image">
-    <meta name="twitter:title"       content="{{ $metaName }} | Seldom Fashion">
+    <meta name="twitter:title"       content="{{ $metaName }} | {{ $_sn }}">
     <meta name="twitter:description" content="{{ $metaDesc }}">
     <meta name="twitter:image"       content="{{ $metaImage }}">
 @endpush
@@ -101,9 +103,9 @@
 
                                 @if ($product?->image)
                                     <div class="swiper-slide">
-                                        <a href="{{ asset('storage/images/products/' . $product?->image) }}"
+                                        <a href="{{ $product->getImageFullUrl() ?? '' }}"
                                             data-fancybox="gallery">
-                                            <img lazy src="{{ asset('storage/images/products/' . $product?->image) }}" />
+                                            <img lazy src="{{ $product->getImageFullUrl() ?? '' }}" />
 
                                         </a>
                                     </div>
@@ -111,8 +113,8 @@
                                 @if ($product?->media?->where('category', 'product_images')->count() > 0)
                                     @foreach ($product->media->where('category', 'product_images') as $pimage)
                                         <div class="swiper-slide">
-                                            <a href="{{ asset($pimage->path) }}" data-fancybox="gallery">
-                                                <img src="{{ asset($pimage->path) }}" />
+                                            <a href="{{ $pimage->getUrl() }}" data-fancybox="gallery">
+                                                <img src="{{ $pimage->getUrl() }}" />
                                             </a>
                                         </div>
                                     @endforeach
@@ -141,7 +143,7 @@
 
                                 @if ($product?->image)
                                     <div class="swiper-slide">
-                                        <img lazy src="{{ asset('storage/images/products/' . $product?->image) }}" />
+                                        <img lazy src="{{ $product->getImageFullUrl() ?? '' }}" />
 
 
                                     </div>
@@ -151,7 +153,7 @@
                                     @foreach ($product->media->where('category', 'product_images') as $pimage)
                                         <div class="swiper-slide">
 
-                                            <img src="{{ asset($pimage->path) }}" />
+                                            <img src="{{ $pimage->getUrl() }}" />
 
                                         </div>
                                     @endforeach
@@ -421,7 +423,7 @@
 
                                 <div class="p-img-box">
                                     <a href="{{ $pitem?->url }}">
-                                        <img src="{{ asset('storage/images/products/' . $pitem->image) }}"
+                                        <img src="{{ $pitem->getImageFullUrl() ?? '' }}"
                                             alt="">
                                     </a>
                                 </div>

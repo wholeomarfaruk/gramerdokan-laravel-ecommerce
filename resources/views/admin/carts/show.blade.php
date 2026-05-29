@@ -102,7 +102,7 @@
                                     <td>
                                         <div class="d-flex align-items-center gap-3">
                                             <img class="cart-item-thumb"
-                                                src="{{ $item->product?->image ? asset('storage/images/products/' . $item->product->image) : asset('frontend/img/logo-transparent.png') }}"
+                                                src="{{ $item->product?->getImageFullUrl() ?? asset('frontend/img/logo-transparent.png') }}"
                                                 alt="{{ $item->product?->name ?: 'Product' }}">
                                             <div>
                                                 <div class="body-title-2">{{ $item->product?->name ?: 'Deleted product' }}</div>

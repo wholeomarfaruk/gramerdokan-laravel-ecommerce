@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\StickerController;
+use App\Http\Controllers\Admin\SiteSettingsController;
+use App\Http\Controllers\Admin\TrackingSettingsController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\Admin\CartController as AdminCartController;
 use App\Http\Controllers\CartControllerTest;
 use App\Http\Controllers\SessionRecordController;
@@ -121,6 +124,17 @@ Route::prefix('admin')->group(function () {
         Route::get('/brands/edit/{id}', [AdminController::class, 'brandEdit'])->name('admin.brands.edit');
         Route::post('/brands/update', [AdminController::class, 'brandUpdate'])->name('admin.brands.update');
         Route::delete('/brands/{id}/delete', [AdminController::class, 'brandDelete'])->name('admin.brands.delete');
+        // Segments
+        Route::get('/segments', [SegmentController::class, 'index'])->name('admin.segments');
+        Route::get('/segments/add', [SegmentController::class, 'add'])->name('admin.segments.add');
+        Route::post('/segments/store', [SegmentController::class, 'store'])->name('admin.segments.store');
+        Route::get('/segments/{id}/edit', [SegmentController::class, 'edit'])->name('admin.segments.edit');
+        Route::put('/segments/{id}/update', [SegmentController::class, 'update'])->name('admin.segments.update');
+        Route::delete('/segments/{id}/delete', [SegmentController::class, 'delete'])->name('admin.segments.delete');
+        Route::get('/segments/{id}/products', [SegmentController::class, 'manageRelation'])->name('admin.segments.products');
+        Route::post('/segments/{id}/products', [SegmentController::class, 'assignProducts'])->name('admin.segments.products.assign');
+        Route::delete('/segments/{id}/products', [SegmentController::class, 'unassignProducts'])->name('admin.segments.products.unassign');
+
         // Categories
         Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories');
         Route::get('/categories/add', [CategoryController::class, 'add'])->name('admin.categories.add');
@@ -209,6 +223,14 @@ Route::prefix('admin')->group(function () {
         Route::put('/location/update', [AdminController::class, 'locationUpdate'])->name('admin.location.update');
         Route::delete('/location/delete', [AdminController::class, 'locationDelete'])->name('admin.location.delete');
 
+        // Site Settings
+        Route::get('/site-settings', [SiteSettingsController::class, 'index'])->name('admin.site.settings');
+        Route::post('/site-settings', [SiteSettingsController::class, 'update'])->name('admin.site.settings.update');
+
+        // Tracking Settings
+        Route::get('/tracking-settings', [TrackingSettingsController::class, 'index'])->name('admin.tracking.settings');
+        Route::put('/tracking-settings', [TrackingSettingsController::class, 'update'])->name('admin.tracking.settings.update');
+
         //sticker
         Route::post('/generate-sticker', [StickerController::class, 'generate'])->name('admin.generate.sticker');
 
@@ -221,6 +243,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/campaigns/landing-page/{id}/edit', [AdminController::class, 'campaignLandingPageEdit'])->name('admin.campaigns.landingpage.edit');
         Route::put('/campaigns/landing-page/{id}/update', [AdminController::class, 'campaignLandingPageUpdate'])->name('admin.campaigns.landingpage.update');
         Route::delete('/campaigns/{id}/delete', [AdminController::class, 'campaignDelete'])->name('admin.campaigns.delete');
+        Route::post('/campaigns/{id}/copy', [AdminController::class, 'campaignCopy'])->name('admin.campaigns.copy');
+        Route::post('/campaigns/{id}/toggle-status', [AdminController::class, 'campaignToggleStatus'])->name('admin.campaigns.toggle-status');
+        Route::post('/campaigns/landing-page/{id}/sync-template', [AdminController::class, 'campaignSyncTemplate'])->name('admin.campaigns.landingpage.sync');
 
         //Landing page
         Route::get('/landing-pages/view/{id}', [AdminController::class, 'landingPageView'])->name('admin.landingpages.view');

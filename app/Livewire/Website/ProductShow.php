@@ -97,10 +97,8 @@ class ProductShow extends Component
             ecommerce: $ecommerce
         );
 
-        $payload=$checkoutEvent->payload();
         $broweserEventpayload=$checkoutEvent->browserEventPayload();
-        
-        SendMetaCapiEventJob::dispatch($payload);
+        SendMetaCapiEventJob::dispatch($checkoutEvent->serverPayload())->onQueue(env('META_CAPI_QUEUE', 'metacapi'));
         $this->dispatch('initiate-checkout', $broweserEventpayload);
     }
 

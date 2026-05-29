@@ -51,7 +51,7 @@
         "
     >
         {{-- Header --}}
-        <div style="padding:16px 20px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+        <div style="padding:14px 20px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
             <div>
                 <div class="body-title">Media Library</div>
                 <div class="text-tiny" style="color:#9ca3af;">
@@ -61,16 +61,37 @@
                     @endif
                 </div>
             </div>
-            <button
-                type="button"
-                wire:click="close"
-                style="background:none;border:none;font-size:20px;cursor:pointer;color:#6b7280;line-height:1;"
-                aria-label="Close"
-            >&times;</button>
+            <div style="display:flex; align-items:center; gap:8px;">
+                {{-- Tab switcher --}}
+                <div style="display:flex; background:#f3f4f6; border-radius:8px; padding:3px; gap:2px;">
+                    <button type="button" wire:click="switchTab('browse')"
+                        style="padding:5px 14px; border-radius:6px; border:none; font-size:12px; font-weight:600; cursor:pointer;
+                               background: {{ $activeTab === 'browse' ? '#fff' : 'transparent' }};
+                               color: {{ $activeTab === 'browse' ? '#111827' : '#6b7280' }};
+                               box-shadow: {{ $activeTab === 'browse' ? '0 1px 3px rgba(0,0,0,.1)' : 'none' }};
+                               transition:.15s;">
+                        <i class="icon-grid" style="margin-right:4px;"></i> Browse
+                    </button>
+                    <button type="button" wire:click="switchTab('upload')"
+                        style="padding:5px 14px; border-radius:6px; border:none; font-size:12px; font-weight:600; cursor:pointer;
+                               background: {{ $activeTab === 'upload' ? '#fff' : 'transparent' }};
+                               color: {{ $activeTab === 'upload' ? '#111827' : '#6b7280' }};
+                               box-shadow: {{ $activeTab === 'upload' ? '0 1px 3px rgba(0,0,0,.1)' : 'none' }};
+                               transition:.15s;">
+                        <i class="icon-upload" style="margin-right:4px;"></i> Upload
+                    </button>
+                </div>
+                <button type="button" wire:click="close"
+                    style="background:none;border:none;font-size:20px;cursor:pointer;color:#6b7280;line-height:1;"
+                    aria-label="Close">&times;</button>
+            </div>
         </div>
 
+        {{-- ══ BROWSE TAB ══════════════════════════════════════════════════════ --}}
+        @if ($activeTab === 'browse')
+
         {{-- Filters --}}
-        <div style="padding:12px 20px; border-bottom:1px solid #e5e7eb; display:flex; gap:10px; flex-wrap:wrap;">
+        <div style="padding:10px 20px; border-bottom:1px solid #e5e7eb; display:flex; gap:10px; flex-wrap:wrap;">
             <div class="form-search" style="flex:1; min-width:180px;">
                 <fieldset class="name">
                     <input
@@ -95,7 +116,11 @@
             @if ($mediaItems->isEmpty())
                 <div class="text-center py-5">
                     <i class="icon-image" style="font-size:42px; color:#d1d5db; display:block; margin-bottom:10px;"></i>
-                    <div class="text-tiny" style="color:#9ca3af;">No media found</div>
+                    <div class="text-tiny" style="color:#9ca3af; margin-bottom:12px;">No media found</div>
+                    <button type="button" wire:click="switchTab('upload')"
+                            style="background:#2377FC;color:#fff;border:none;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;">
+                        <i class="icon-upload"></i> Upload files
+                    </button>
                 </div>
             @else
                 <div class="row g-2">
@@ -182,5 +207,26 @@
                 </button>
             </div>
         </div>
+
+        @endif
+
+        {{-- ══ UPLOAD TAB ══════════════════════════════════════════════════════ --}}
+        @if ($activeTab === 'upload')
+        <div style="flex:1; overflow-y:auto; padding:20px;">
+            <div class="text-tiny mb-3" style="color:#6b7280;">
+                Upload files to the media library. After uploading, switch to
+                <strong>Browse</strong> to select them.
+            </div>
+            @livewire('admin.media.media-upload')
+        </div>
+        <div style="padding:14px 20px; border-top:1px solid #e5e7eb; display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" wire:click="switchTab('browse')" class="tf-button style-1">
+                <i class="icon-arrow-left"></i> Back to Browse
+            </button>
+            <button type="button" wire:click="close" class="tf-button style-1">
+                Cancel
+            </button>
+        </div>
+        @endif
     </div>
 </div>

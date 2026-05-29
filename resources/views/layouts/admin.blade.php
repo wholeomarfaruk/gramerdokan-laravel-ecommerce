@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ ($site['site_name'] ?? 'Admin') }} — Admin</title>
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-resource/css/animate.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-resource/css/animation.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-resource/css/bootstrap.css') }}">
@@ -46,8 +46,12 @@
                 <div class="section-menu-left">
                     <div class="box-logo">
                         <a href="{{ route('admin.index') }}" id="site-logo-inner">
-                            <h4>Seldom Fashion</h4>
-                            {{-- <img class="" id="logo_header" alt="" src="{{asset('admin-resource/images/logo/logo.png')}}" > --}}
+                            @if(!empty($site['header_logo']))
+                                <img class="" id="logo_header" alt="{{ $site['site_name'] ?? '' }}"
+                                    src="{{ asset('storage/' . $site['header_logo']) }}" style="max-height:40px;">
+                            @else
+                                <h4>{{ $site['site_name'] ?? 'Seldom Fashion' }}</h4>
+                            @endif
                         </a>
                         <div class="button-show-hide">
                             <i class="icon-menu-left"></i>
@@ -143,20 +147,39 @@
 
                                     </ul>
                                 </li>
-                                <li class="menu-item has-children">
+                                <li class="menu-item has-children {{ Request::is('admin/categories*') ? 'active' : '' }}">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-layers"></i></div>
                                         <div class="text">Category</div>
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="{{ route('admin.categories.add') }}" class="">
+                                            <a href="{{ route('admin.categories.add') }}" class="{{ Request::is('admin/categories/add') ? 'active' : '' }}">
                                                 <div class="text">New Category</div>
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
-                                            <a href="{{ route('admin.categories') }}" class="">
+                                            <a href="{{ route('admin.categories') }}" class="{{ Request::is('admin/categories') ? 'active' : '' }}">
                                                 <div class="text">Categories</div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="menu-item has-children {{ Request::is('admin/segments*') ? 'active' : '' }}">
+                                    <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-grid"></i></div>
+                                        <div class="text">Segments</div>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="sub-menu-item">
+                                            <a href="{{ route('admin.segments.add') }}" class="{{ Request::is('admin/segments/add') ? 'active' : '' }}">
+                                                <div class="text">New Segment</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="{{ route('admin.segments') }}" class="{{ Request::is('admin/segments') ? 'active' : '' }}">
+                                                <div class="text">All Segments</div>
                                             </a>
                                         </li>
                                     </ul>
@@ -258,7 +281,17 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="{{ route('admin.settings.terminal') }}" class="">
+                                            <a href="{{ route('admin.site.settings') }}" class="{{ Request::is('admin/site-settings') ? 'active' : '' }}">
+                                                <div class="text">Site Settings</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="{{ route('admin.tracking.settings') }}" class="{{ Request::is('admin/tracking-settings') ? 'active' : '' }}">
+                                                <div class="text">Tracking Settings</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="{{ route('admin.settings.terminal') }}" class="{{ Request::is('admin/settings/terminal') ? 'active' : '' }}">
                                                 <div class="text">Terminal</div>
                                             </a>
                                         </li>
@@ -569,7 +602,7 @@
                     <div class="main-content">
                         @yield('content')
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2025 Seldom Fashion</div>
+                            <div class="body-text">{{ $site['copyright_text'] ?? '© 2025 Seldom Fashion' }}</div>
                         </div>
                     </div>
 

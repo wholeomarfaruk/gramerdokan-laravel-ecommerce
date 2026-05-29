@@ -9,7 +9,6 @@ use App\Livewire\Website\CartManager;
 use App\Models\Cart as ModelsCart;
 use App\Models\Device;
 use App\Models\Customer;
-use App\Services\CAPI;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Surfsidemedia\Shoppingcart\Facades\Cart;

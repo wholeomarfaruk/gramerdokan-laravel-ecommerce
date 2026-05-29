@@ -46,5 +46,12 @@ class Category extends Model
         return $this->morphToMany(Segment::class, 'segmentable');
     }
 
+    public function getImageUrl(): ?string
+    {
+        if (!$this->image) return null;
+        return (str_starts_with($this->image, 'http') || str_starts_with($this->image, '/'))
+            ? $this->image
+            : asset('images/category/' . $this->image);
+    }
 
 }

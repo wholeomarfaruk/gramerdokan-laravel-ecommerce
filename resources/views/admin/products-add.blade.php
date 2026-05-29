@@ -30,8 +30,8 @@
                 </ul>
             </div>
             <!-- form-add-product -->
-            <form class="tf-section-2 form-add-product needs-validation" method="POST" enctype="multipart/form-data"
-                action="{{ route('admin.products.store') }}" novalidate>
+            <form class="tf-section-2 form-add-product" method="POST"
+                action="{{ route('admin.products.store') }}">
                 @csrf
                 <div class="wg-box">
                     <fieldset class="name">
@@ -39,8 +39,7 @@
                         </div>
                         <input class="mb-10 @error('name') is-invalid @enderror" type="text"
                             placeholder="Enter product name" name="name" tabindex="0" aria-required="true"
-                            value="{{ old('name', $product?->name) }}" required autocomplete="name" autofocus
-                            onchange="stringtoSlug(this.value)">
+                            value="{{ old('name', $product?->name) }}" required autocomplete="name" autofocus>
                         <div class="text-tiny">Do not exceed 100 characters when entering the
                             product name.</div>
                         @error('name')
@@ -254,19 +253,35 @@
 
                 </div>
                 <div class="wg-box">
+                    {{-- Featured image --}}
                     <fieldset>
                         <div class="body-title mb-10">Featured image <span class="tf-color-1">*</span></div>
-                        <input type="file" id="featuredImage" name="image" accept="image/*">
+                        <input type="hidden" name="image" id="prod_image_url" value="{{ old('image') }}">
                         @error('image')
-                            <span class="text-danger text-tiny">{{ $message }}</span>
+                            <span class="text-danger text-tiny d-block mb-2">{{ $message }}</span>
                         @enderror
+                        <div id="prod_image_preview" style="{{ old('image') ? '' : 'display:none;' }} margin-bottom:10px;">
+                            <img id="prod_image_preview_img" src="{{ old('image') }}"
+                                 style="height:80px;width:80px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;display:block;margin-bottom:6px;">
+                            <button type="button" id="prod_image_remove" class="tf-button style-1" style="font-size:12px;padding:4px 12px;">
+                                <i class="icon-x"></i> Remove
+                            </button>
+                        </div>
+                        <button type="button" id="prod_image_pick" class="tf-button style-1"
+                                style="{{ old('image') ? 'display:none;' : '' }}"
+                                onclick="Livewire.dispatch('open-media-picker', { multiple: false, callbackKey: 'prod_featured' })">
+                            <i class="icon-image"></i> Choose from Media Library
+                        </button>
                     </fieldset>
+
+                    {{-- Gallery images --}}
                     <fieldset>
                         <div class="body-title mb-10">Gallery images</div>
-                        <input type="file" id="galleryImages" name="images[]" accept="image/*" multiple>
-                        @error('images')
-                            <span class="text-danger text-tiny">{{ $message }}</span>
-                        @enderror
+                        <div id="gallery_preview" class="d-flex flex-wrap gap-2 mb-2"></div>
+                        <button type="button" class="tf-button style-1"
+                                onclick="Livewire.dispatch('open-media-picker', { multiple: true, callbackKey: 'prod_gallery' })">
+                            <i class="icon-images"></i> Add from Media Library
+                        </button>
                     </fieldset>
                     <div class="cols gap22">
                         <fieldset class="name">
@@ -298,24 +313,51 @@
         <!-- /main-content-wrap -->
     </div>
     <!-- content area end -->
+    @livewire('admin.media.media-picker')
 @endsection
 @push('scripts')
     <script>
-        createFilePond('featuredImage', { allowMultiple: false });
-        createFilePond('galleryImages', { allowMultiple: true });
+        // ── Featured image ────────────────────────────────────────────────────
+        window.addEventListener('media-picker-confirmed', e => {
+            const payload = e.detail[0] ?? e.detail;
 
-        function stringtoSlug(str) {
-            str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing spaces
-            str = str.toLowerCase();
-            str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-                .replace(/\s+/g, '-') // collapse whitespace and replace by -
-                .replace(/-+/g, '-'); // collapse dashes
+            if (payload.callbackKey === 'prod_featured') {
+                const single = payload.single;
+                if (!single) return;
+                document.getElementById('prod_image_url').value        = single.url;
+                document.getElementById('prod_image_preview_img').src  = single.thumbnail || single.url;
+                document.getElementById('prod_image_preview').style.display = '';
+                document.getElementById('prod_image_pick').style.display    = 'none';
+            }
 
+            if (payload.callbackKey === 'prod_gallery') {
+                const grid = document.getElementById('gallery_preview');
+                const form = grid.closest('form');
+                payload.media.forEach(item => {
+                    // Skip if already added
+                    if (form.querySelector(`input[name="gallery_media_ids[]"][value="${item.id}"]`)) return;
 
+                    const wrap = document.createElement('div');
+                    wrap.style.cssText = 'position:relative;width:72px;';
+                    wrap.innerHTML = `
+                        <img src="${item.thumbnail || item.url}"
+                             style="width:72px;height:72px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;">
+                        <button type="button"
+                                onclick="this.closest('div').remove(); this.closest('form').querySelector('input[value=\\'${item.id}\\']')?.remove();"
+                                style="position:absolute;top:2px;right:2px;background:#ef4444;border:none;border-radius:50%;color:#fff;width:18px;height:18px;font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+                        <input type="hidden" name="gallery_media_ids[]" value="${item.id}">
+                    `;
+                    grid.appendChild(wrap);
+                });
+            }
+        });
 
-            $('#slug_input').val(str);
-
-        }
+        document.getElementById('prod_image_remove').addEventListener('click', () => {
+            document.getElementById('prod_image_url').value              = '';
+            document.getElementById('prod_image_preview_img').src        = '';
+            document.getElementById('prod_image_preview').style.display  = 'none';
+            document.getElementById('prod_image_pick').style.display     = '';
+        });
     </script>
     <script src="https://cdn.tiny.cloud/1/hkkbs6irhd8pjbxo4xgcyy5o1lvtjcx4p843koiprxzql6dh/tinymce/8/tinymce.min.js"
         referrerpolicy="origin" crossorigin="anonymous"></script>

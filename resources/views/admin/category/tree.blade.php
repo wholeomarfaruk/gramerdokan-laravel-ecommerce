@@ -6,9 +6,7 @@
     $isActive    = $category->is_active ?? 1;
     $depthClass  = 'cat-depth-' . min($depth, 3);
 
-    $imgSrc = $category->image
-        ? asset('images/category/' . $category->image)
-        : null;
+    $imgSrc = $category->getImageUrl();
 @endphp
 
 <div class="cat-node {{ $depthClass }}">

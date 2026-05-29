@@ -14,25 +14,25 @@ class LandingPageSeeder extends Seeder
 
 
       LandingPage::updateOrCreate(
-            ['view_file' => 'templates.landingpages.page1'],
+            ['view_file' => 'templates.landingpages.seldom_zaynah_eid'],
 
             [
-                'name' => 'Product Landing Page 1',
-                'view_file' => 'templates.landingpages.page1',
+                'name' => 'Seldom — Zaynah Eid (Single Video)',
+                'view_file' => 'templates.landingpages.seldom_zaynah_eid',
                 'status' => true,
-                'json_data' => file_get_contents(base_path('resources/views/templates/landingpages/page1.json')),
-                'version' => json_decode(file_get_contents(base_path('resources/views/templates/landingpages/page1.json')))->version,
+                'json_data' => file_get_contents(base_path('resources/views/templates/landingpages/seldom_zaynah_eid.json')),
+                'version' => json_decode(file_get_contents(base_path('resources/views/templates/landingpages/seldom_zaynah_eid.json')))->version,
             ]
         );
       LandingPage::updateOrCreate(
-            ['view_file' => 'templates.landingpages.page2'],
+            ['view_file' => 'templates.landingpages.seldom_zaynah_eid_v2'],
 
             [
-                'name' => 'Product Landing with two video',
-                'view_file' => 'templates.landingpages.page2',
+                'name' => 'Seldom — Zaynah Eid v2 (Dual Video)',
+                'view_file' => 'templates.landingpages.seldom_zaynah_eid_v2',
                 'status' => true,
-                'json_data' => file_get_contents(base_path('resources/views/templates/landingpages/page2.json')),
-                'version' => json_decode(file_get_contents(base_path('resources/views/templates/landingpages/page2.json')))->version,
+                'json_data' => file_get_contents(base_path('resources/views/templates/landingpages/seldom_zaynah_eid_v2.json')),
+                'version' => json_decode(file_get_contents(base_path('resources/views/templates/landingpages/seldom_zaynah_eid_v2.json')))->version,
             ]
         );
 

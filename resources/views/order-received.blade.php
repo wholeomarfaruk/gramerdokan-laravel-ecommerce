@@ -43,7 +43,7 @@
                     <hr class="m-0">
                     @foreach ($orderItems as $item)
                         <div class="d-flex order-card p-2">
-                            <img src="{{ asset('storage/images/products/thumbnails/' . $item->product->image) }}"
+                            <img src="{{ $item->product->getImageThumbUrl() ?? '' }}"
                                 alt="" class="me-2" />
                             <div class="">
                                 <h5 class="order-product-name">{{ $item->product->name }}</h5>

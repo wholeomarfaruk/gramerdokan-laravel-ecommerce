@@ -9,6 +9,42 @@
 <meta name="description" content="{{ $data->seo->meta_description ?? '' }}">
 @if(!empty($data->seo->meta_image ?? ''))<meta property="og:image" content="{{ $data->seo->meta_image }}">@endif
 @if(!empty($data->seo->favicon_url ?? ''))<link rel="icon" href="{{ $data->seo->favicon_url }}">@endif
+@php
+  $lp_primary = $selected_products->first() ?? null;
+  $lp_view_payload = null;
+  if ($lp_primary) {
+      try {
+          $lp_event = new \App\CAPI\ViewItemEvent();
+          $lp_event->push(
+              null,
+              currency: 'BDT',
+              contentPrice: $lp_primary->discounted_price,
+              contentId: $lp_primary->id,
+              contentName: $lp_primary->name,
+              contentType: 'product',
+              contentCategory: null,
+          );
+          \App\Jobs\SendMetaCapiEventJob::dispatch($lp_event->serverPayload())
+              ->onQueue(config('conversionapi.meta_capi_queue', 'metacapi'));
+          $lp_view_payload = $lp_event->browserEventPayload();
+      } catch (\Throwable $e) {
+          // tracking must never break the page
+      }
+  }
+@endphp
+@if(config('conversionapi.tiktok_pixel_id'))
+<script>
+!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+ttq.load('{{ config('conversionapi.tiktok_pixel_id') }}');
+ttq.page();
+}(window, document, 'ttq');
+</script>
+@endif
+@if(config('conversionapi.gtm_id'))
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','{{ config('conversionapi.gtm_id') }}');
+</script>
+@endif
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════
@@ -1018,6 +1054,9 @@ section .section-title em{
 </style>
 </head>
 <body>
+@if(config('conversionapi.gtm_id'))
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('conversionapi.gtm_id') }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+@endif
 
 
 
@@ -1083,9 +1122,9 @@ section .section-title em{
     <span></span><span></span><span></span>
   </button>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#features" onclick="closeNav()">বৈশিষ্ট্য</a></li>
-    <li><a href="#media" onclick="closeNav()">আমাদের বাগান</a></li>
-    <li><a href="#packages" onclick="closeNav()">অর্ডার</a></li>
+    @foreach($data->nav->menus ?? [(object)['label'=>'বৈশিষ্ট্য','href'=>'#features'],(object)['label'=>'আমাদের বাগান','href'=>'#media'],(object)['label'=>'অর্ডার','href'=>'#packages']] as $menu)
+    <li><a href="{{ $menu->href }}" onclick="closeNav()">{{ $menu->label }}</a></li>
+    @endforeach
   </ul>
   <div class="nav-controls">
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
@@ -1120,15 +1159,22 @@ section .section-title em{
 <!-- ═══ FEATURES ═══ -->
 <section id="features">
   <div class="reveal">
-    <div class="section-badge">কেন আমরা আলাদা</div>
-    <h2 class="section-title">সেরা আমের <em>নিশ্চয়তা</em></h2>
-    <p class="section-desc">প্রতিটি আম হওয়া উচিত সতেজ, মিষ্টি এবং স্বাস্থ্যকর — কোনো আপোষ ছাড়াই।</p>
+    <div class="section-badge">{{ $data->features->badge ?? 'কেন আমরা আলাদা' }}</div>
+    <h2 class="section-title">{!! $data->features->title ?? 'সেরা আমের <em>নিশ্চয়তা</em>' !!}</h2>
+    <p class="section-desc">{{ $data->features->desc ?? 'প্রতিটি আম হওয়া উচিত সতেজ, মিষ্টি এবং স্বাস্থ্যকর — কোনো আপোষ ছাড়াই।' }}</p>
   </div>
   <div class="features-grid reveal-stagger">
-    <div class="feature-card"><div class="feature-icon-wrap">🌿</div><div><div class="feature-title">কেমিক্যাল মুক্ত</div><p class="feature-desc">কোনো ফরমালিন, কৃত্রিম পাকানো নেই। গাছে পাকা আম সরাসরি সংগ্রহ।</p></div></div>
-    <div class="feature-card"><div class="feature-icon-wrap">🚚</div><div><div class="feature-title">দ্রুত ডেলিভারি</div><p class="feature-desc">অর্ডারের ২৪ ঘণ্টার মধ্যে আপনার দরজায়। সারা বাংলাদেশে।</p></div></div>
-    <div class="feature-card"><div class="feature-icon-wrap">📦</div><div><div class="feature-title">নিরাপদ প্যাকেজিং</div><p class="feature-desc">প্রতিটি আম যত্ন সহকারে প্যাক করা হয়, ক্ষতি হয় না।</p></div></div>
-    <div class="feature-card"><div class="feature-icon-wrap">⭐</div><div><div class="feature-title">মানের গ্যারান্টি</div><p class="feature-desc">আম পছন্দ না হলে সম্পূর্ণ অর্থ ফেরত। পূর্ণ আস্থা।</p></div></div>
+    @foreach($data->features->items ?? [] as $feat)
+      @if(!empty($feat->title))
+      <div class="feature-card">
+        <div class="feature-icon-wrap">{{ $feat->icon }}</div>
+        <div>
+          <div class="feature-title">{{ $feat->title }}</div>
+          <p class="feature-desc">{{ $feat->desc }}</p>
+        </div>
+      </div>
+      @endif
+    @endforeach
   </div>
 </section>
 
@@ -1325,7 +1371,7 @@ END COMMENT -->
 
 <!-- ═══ FOOTER ═══ -->
 <footer>
-  <div class="foot-brand">{{ $data->footer->brand ?? '🥭 Season Fresh Mango' }}</div>
+  <div class="foot-brand">{!! $data->footer->brand ?? '🥭 Season Fresh Mango' !!}</div>
   <div class="foot-links"><a href="{{ $data->footer->facebook_url ?? '#' }}">ফেসবুক</a><a href="{{ $data->footer->whatsapp_url ?? '#' }}">হোয়াটসঅ্যাপ</a><a href="#">যোগাযোগ</a></div>
   <div>{{ $data->footer->copyright ?? '© ২০২৫ সিজন ফ্রেশ ম্যাঙ্গো' }}</div>
 </footer>
@@ -1956,6 +2002,36 @@ function addToCart(idx,btn){
   renderCartSummary();
   btn.textContent='✓ যোগ হয়েছে'; btn.classList.add('added');
   setTimeout(()=>{btn.textContent='কার্টে যোগ করুন +';btn.classList.remove('added');},2000);
+
+  // ── AddToCart tracking ────────────────────────────────────────────────────
+  const _pkg  = packages[idx];
+  const _qty  = cartItems.find(c=>c.idx===idx)?.qty ?? 1;
+  const _val  = (_pkg.priceNum - unitDiscount(_pkg, selectedDelivery)) * _qty;
+  const _atcId = lpEventId();
+  window.dataLayer.push({
+    event: 'AddToCart',
+    event_id: _atcId,
+    event_source_url: lpCurrentUrl,
+    custom_data: {
+      content_ids: [String(_pkg.product_id || '')],
+      content_name: _pkg.label,
+      value: _val,
+      currency: 'BDT',
+      quantity: _qty,
+      content_type: 'product',
+    },
+  });
+  lpCapiFetch({
+    event_name: 'add_to_cart',
+
+    event_id: _atcId,
+    event_source_url: lpCurrentUrl,
+    content_id: String(_pkg.product_id || ''),
+    content_name: _pkg.label,
+    value: _val,
+    currency: 'BDT',
+    quantity: _qty,
+  });
 }
 
 /* ══════════════════════════════════════
@@ -2160,6 +2236,30 @@ function submitOrder(e){
   }
   if(!cartItems.length){ alert('কার্টে কোনো আইটেম নেই।'); return; }
 
+  // ── InitiateCheckout tracking ─────────────────────────────────────────────
+  const _icId       = lpEventId();
+  const _icContents = cartItems.map(c => ({
+    id:         String(packages[c.idx].product_id || ''),
+    quantity:   c.qty,
+    item_price: packages[c.idx].priceNum - unitDiscount(packages[c.idx], selectedDelivery),
+  }));
+  const _icValue   = cartTotalPrice();
+  const _icPayload = {
+    event: 'begin_checkout',
+    event_id: _icId,
+    event_source_url: lpCurrentUrl,
+    referrer_url: lpReferrer,
+    custom_data: {
+      currency: 'BDT',
+      value: _icValue,
+      contents: _icContents,
+      num_items: _icContents.reduce((s, c) => s + c.quantity, 0),
+    },
+    user_data: { phone_number: phone, first_name: name, street: address },
+  };
+  window.dataLayer.push(_icPayload);
+  lpCapiFetch({ event_name: 'initiate_checkout', payload: _icPayload });
+
   const btn=document.getElementById('submitBtn');
   btn.disabled=true; btn.textContent='অর্ডার পাঠানো হচ্ছে...';
 
@@ -2201,6 +2301,37 @@ function submitOrder(e){
   .then(r => r.json())
   .then(res => {
     if(res.status === 'success'){
+      // ── Purchase tracking ───────────────────────────────────────────────────
+      const _purId       = lpEventId();
+      const _purContents = items.map(i => ({
+        id:         String(i.product_id || ''),
+        quantity:   i.qty,
+        item_price: i.finalPrice,
+      }));
+      const _purValue = items.reduce((s, i) => s + i.finalPrice * i.qty, 0);
+      window.dataLayer.push({
+        event: 'purchase',
+        event_id: _purId,
+        event_source_url: lpCurrentUrl,
+        ecommerce: {
+          transaction_id: res.order_id,
+          value: _purValue,
+          currency: 'BDT',
+          items: _purContents,
+        },
+      });
+      lpCapiFetch({
+        event_name: 'purchase',
+    
+        event_id: _purId,
+        event_source_url: lpCurrentUrl,
+        order_id: res.order_id,
+        value: _purValue,
+        currency: 'BDT',
+        contents: _purContents,
+        user_data: { phone_number: phone, first_name: name, street: address },
+      });
+
       sndSuccess();
       showSuccessPop(name, phone);
       // Reset form fields
@@ -2247,6 +2378,30 @@ document.querySelectorAll('.reveal,.reveal-stagger').forEach(el=>observer.observ
 /* ══════════════════════════════════════
    INIT
 ══════════════════════════════════════ */
+/* ══════════════════════════════════════
+   TRACKING — season_fresh_mango
+══════════════════════════════════════ */
+window.dataLayer = window.dataLayer || [];
+const lpCsrf       = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+const lpCurrentUrl = window.location.href;
+const lpReferrer   = document.referrer || '';
+
+function lpEventId(){
+  return Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+}
+
+function lpCapiFetch(body){
+  fetch('/fb-pixel-capi', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': lpCsrf },
+    body: JSON.stringify(body),
+  }).catch(() => {});
+}
+
+@if($lp_view_payload)
+window.dataLayer.push(@json($lp_view_payload));
+@endif
+
 renderPackages();
 startTyping();
 

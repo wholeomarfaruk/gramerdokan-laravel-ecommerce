@@ -64,8 +64,9 @@
                                     <td>{{ $slide->id }}</td>
                                     <td class="pname">
                                         <div class="image">
-                                            <img src="{{ asset('storage/images/slides/' . $slide->image) }}" alt=""
-                                                class="image">
+                                            @if ($slide->getImageUrl())
+                                                <img src="{{ $slide->getImageUrl() }}" alt="" class="image">
+                                            @endif
                                         </div>
                                     </td>
                                     <td>{{ $slide->tagline }}</td>

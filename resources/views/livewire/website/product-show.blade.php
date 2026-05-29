@@ -12,10 +12,10 @@
 
                                 @if ($product?->image)
                                     <div class="swiper-slide">
-                                        <a href="{{ asset('storage/images/products/' . $product?->image) }}"
+                                        <a href="{{ $product->getImageFullUrl() ?? '' }}"
                                             data-fancybox="gallery">
                                             <img lazy
-                                                src="{{ asset('storage/images/products/' . $product?->image) }}" />
+                                                src="{{ $product->getImageFullUrl() ?? '' }}" />
 
                                         </a>
                                     </div>
@@ -23,8 +23,8 @@
                                 @if ($product?->media?->where('category', 'product_images')->count() > 0)
                                     @foreach ($product->media->where('category', 'product_images') as $pimage)
                                         <div class="swiper-slide">
-                                            <a href="{{ asset($pimage->path) }}" data-fancybox="gallery">
-                                                <img src="{{ asset($pimage->path) }}" />
+                                            <a href="{{ $pimage->getUrl() }}" data-fancybox="gallery">
+                                                <img src="{{ $pimage->getUrl() }}" />
                                             </a>
                                         </div>
                                     @endforeach
@@ -54,7 +54,7 @@
 
                                 @if ($product?->image)
                                     <div class="swiper-slide">
-                                        <img lazy src="{{ asset('storage/images/products/' . $product?->image) }}" />
+                                        <img lazy src="{{ $product->getImageFullUrl() ?? '' }}" />
 
 
                                     </div>
@@ -64,7 +64,7 @@
                                     @foreach ($product->media->where('category', 'product_images') as $pimage)
                                         <div class="swiper-slide">
 
-                                            <img src="{{ asset($pimage->path) }}" />
+                                            <img src="{{ $pimage->getUrl() }}" />
 
                                         </div>
                                     @endforeach
@@ -342,7 +342,7 @@
 
                                 <div class="p-img-box">
                                     <a href="{{ $pitem?->url }}">
-                                        <img src="{{ asset('storage/images/products/' . $pitem->image) }}"
+                                        <img src="{{ $pitem->getImageFullUrl() ?? '' }}"
                                             alt="">
                                     </a>
                                 </div>

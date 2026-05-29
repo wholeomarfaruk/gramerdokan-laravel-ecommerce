@@ -1,21 +1,22 @@
 @extends('layouts.app')
-@section('page_title', 'Shop | Seldom Fashion')
+@php $_sn = $site['site_name'] ?? 'Gramer Dokan'; $_og = !empty($site['favicon']) ? asset('storage/'.$site['favicon']) : asset('frontend/img/seldom-rounded.png'); @endphp
+@section('page_title', 'Shop | ' . $_sn)
 @push('meta')
-    <meta name="description" content="Shop the latest fashion collection at Seldom Fashion. Premium quality clothing, sarees, and ethnic wear at the best price in Bangladesh.">
+    <meta name="description" content="Shop the latest fashion collection at {{ $_sn }}. Premium quality clothing, sarees, and ethnic wear at the best price in Bangladesh.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <meta property="og:type"        content="website">
-    <meta property="og:title"       content="Shop | Seldom Fashion">
-    <meta property="og:description" content="Shop the latest fashion collection at Seldom Fashion. Premium quality clothing, sarees, and ethnic wear at the best price in Bangladesh.">
-    <meta property="og:image"       content="{{ asset('frontend/img/seldom-rounded.png') }}">
+    <meta property="og:title"       content="Shop | {{ $_sn }}">
+    <meta property="og:description" content="Shop the latest fashion collection at {{ $_sn }}. Premium quality clothing, sarees, and ethnic wear at the best price in Bangladesh.">
+    <meta property="og:image"       content="{{ $_og }}">
     <meta property="og:url"         content="{{ url()->current() }}">
-    <meta property="og:site_name"   content="Seldom Fashion">
+    <meta property="og:site_name"   content="{{ $_sn }}">
 
     <meta name="twitter:card"        content="summary_large_image">
-    <meta name="twitter:title"       content="Shop | Seldom Fashion">
-    <meta name="twitter:description" content="Shop the latest fashion collection at Seldom Fashion. Premium quality clothing, sarees, and ethnic wear at the best price in Bangladesh.">
-    <meta name="twitter:image"       content="{{ asset('frontend/img/seldom-rounded.png') }}">
+    <meta name="twitter:title"       content="Shop | {{ $_sn }}">
+    <meta name="twitter:description" content="Shop the latest fashion collection at {{ $_sn }}. Premium quality clothing, sarees, and ethnic wear at the best price in Bangladesh.">
+    <meta name="twitter:image"       content="{{ $_og }}">
 @endpush
 
 @section('content')
@@ -35,7 +36,7 @@
 
                             <div class="p-img-box">
                                 <a href="{{ $product?->url }}">
-                                    <img src="{{ asset('storage/images/products/' . $product->image) }}" alt="">
+                                    <img src="{{ $product->getImageFullUrl() ?? '' }}" alt="">
                                 </a>
                             </div>
                             <div class="p-info">

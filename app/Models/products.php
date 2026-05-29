@@ -61,4 +61,20 @@ class products extends Model
       return route('product.show', ['slug'=>$this->slug,'segment'=>$this->segment->slug]);
     }
 
+    public function getImageThumbUrl(): ?string
+    {
+        if (!$this->image) return null;
+        return (str_starts_with($this->image, 'http') || str_starts_with($this->image, '/'))
+            ? $this->image
+            : asset('storage/images/products/thumbnails/' . $this->image);
+    }
+
+    public function getImageFullUrl(): ?string
+    {
+        if (!$this->image) return null;
+        return (str_starts_with($this->image, 'http') || str_starts_with($this->image, '/'))
+            ? $this->image
+            : asset('storage/images/products/' . $this->image);
+    }
+
 }

@@ -24,23 +24,23 @@ use Illuminate\Support\Str;
 use Jenssegers\Agent\Agent;
 use stdClass;
 use App\Meta\PurchaseEvent;
-use App\Services\DataLayerService;
 use App\Support\DataLayer;
 
 
 class HomeController extends Controller
 {
-    protected $pixelId = "4103454409917132";
-    protected $accessToken = "EAAWH3RG69LkBPvElDZCiZC9F0BrQ0WrjvWMOEF9ZC8jJXypECHZBnTeAH4KL9ZBT8q0GRNPyVf6bDstz57AkimdFtxuQItHZBKWewIeLsPIaROTvUMG7evbcPEPvwB89F0zZAOwshfzJvNBGTadZC8zVhELnNe7JLsZATXgacgRcsfpwscI7vqc4WG26A3lkCMW3YIAZDZD";
-    protected $test_event_code = "TEST78849";
-    protected $seldom_women_pixelId = "2050688985371395";
-    protected $seldom_women_pixel_access_token = "EAAWH3RG69LkBPvR7DzPj8tX1mBijDRRi7jOpGlD3YLs0e3LVeiFYi7ss2JRhUHozXzK8bkIpTrX7UBQdMiY8hGTTOfoqSbrBBKWnFrmN04N4ZAAXZCVxxUPSHMoL4PBKc7RfXtH9FpSfgiCdobszQC6KIiXGoveFzIMX8z7BSZA1fWORp0c73zrkfdzqCFF7gZDZD";
-    protected $seldom_women_pixel_test_event_code = "TEST57589";
-    protected $seldom_men_pixelId = "4103454409917132";
-    protected $seldom_men_pixel_access_token = "EAAWH3RG69LkBPvElDZCiZC9F0BrQ0WrjvWMOEF9ZC8jJXypECHZBnTeAH4KL9ZBT8q0GRNPyVf6bDstz57AkimdFtxuQItHZBKWewIeLsPIaROTvUMG7evbcPEPvwB89F0zZAOwshfzJvNBGTadZC8zVhELnNe7JLsZATXgacgRcsfpwscI7vqc4WG26A3lkCMW3YIAZDZD";
-    protected $seldom_men_pixel_test_event_code = "TEST78849";
-    protected $pixel_debug_mode = false; // Set to true to enable debug mode
+    protected $pixelId;
+    protected $accessToken;
+    protected $test_event_code;
+    protected $pixel_debug_mode = false;
     protected $client;
+
+    public function __construct()
+    {
+        $this->pixelId         = config('conversionapi.meta_pixel_id');
+        $this->accessToken     = config('conversionapi.meta_access_token');
+        $this->test_event_code = config('conversionapi.meta_test_code');
+    }
 
     public function index()
     {
@@ -129,18 +129,7 @@ class HomeController extends Controller
         $deliveryAreas = delivery_areas::limit(5)->get();
         $products = products::where('status', 1)->where('id', '!=', $product->id)->inRandomOrder()->limit(8)->get();
         $segment = $product?->segments?->select('name')?->first() ? strtolower($product->segments->select('name')->first()['name']) : null;
-        // $dataLayerScript =  $dataLayerScript->render('view_item', [
-        //     'page_type' => 'product',
-        //     'ecommerce' => [
-        //         'currency' => 'BDT',
-        //         'value' => (float) $product->price,
-        //         'items' => [
-        //             DataLayer::item($product),
-        //         ],
-        //     ],
-        // ]);
         $capi = new ViewItemEvent();
-        // return config('conversionapi.meta_pixel_id');
         $capi->push(
             null,
             currency: 'BDT',
@@ -149,13 +138,10 @@ class HomeController extends Controller
             contentName: $product->name,
             contentType: 'product',
             contentCategory: $segment,
-
         );
-        $response = $capi->sendServerSide();
-        SendMetaCapiEventJob::dispatch($capi->payload());
-         $viewItemEventPayload = $capi->browserEventPayload();
-        // return response()->json($capi->sendServerSide());
-        return view('product-show', compact('product', 'deliveryAreas', 'products', 'segment','viewItemEventPayload'));
+        SendMetaCapiEventJob::dispatch($capi->serverPayload())->onQueue(env('META_CAPI_QUEUE', 'metacapi'));
+        $viewItemEventPayload = $capi->browserEventPayload();
+        return view('product-show', compact('product', 'deliveryAreas', 'products', 'segment', 'viewItemEventPayload'));
     }
     public function deviceRegister(Request $request)
     {
@@ -547,31 +533,6 @@ class HomeController extends Controller
 
             $segment = $request->segment ? strtolower($request->segment) : null;
 
-            $this->pixelId = $this->seldom_men_pixelId;
-            $this->accessToken = $this->seldom_men_pixel_access_token;
-            $this->test_event_code = $this->seldom_men_pixel_test_event_code;
-
-            // if ($request->has('segment') && !empty($request->segment)) {
-            //     $segment = strtolower($request->segment);
-
-            //     foreach ($filterData as $value) {
-            //         if (str_contains($segment, $value) !== false) { // case-insensitive search
-            //             $segment = $value;
-            //             break; // stop at first match
-            //         }
-            //     }
-            //     if ($segment == 'men') {
-            //         $this->pixelId = $this->seldom_men_pixelId;
-            //         $this->accessToken = $this->seldom_men_pixel_access_token;
-            //         $this->test_event_code = $this->seldom_men_pixel_test_event_code;
-            //     } elseif ($segment == 'women') {
-            //         $this->pixelId = $this->seldom_women_pixelId;
-            //         $this->accessToken = $this->seldom_women_pixel_access_token;
-            //         $this->test_event_code = $this->seldom_women_pixel_test_event_code;
-            //     }
-
-            // }
-            // Log::info('FB Pixel CAPI after segment Started at ' . now());
             if ($request->event_name == 'page_view') {
 
                 // $payload = [
@@ -907,16 +868,6 @@ class HomeController extends Controller
                         break; // stop at first match
                     }
                 }
-                if ($segment == 'men') {
-                    $this->pixelId = $this->seldom_men_pixelId;
-                    $this->accessToken = $this->seldom_men_pixel_access_token;
-                    $this->test_event_code = $this->seldom_men_pixel_test_event_code;
-                } elseif ($segment == 'women') {
-                    $this->pixelId = $this->seldom_women_pixelId;
-                    $this->accessToken = $this->seldom_women_pixel_access_token;
-                    $this->test_event_code = $this->seldom_women_pixel_test_event_code;
-                }
-
             }
 
             if ($trackingEvent->event_name == 'purchase') {
@@ -1015,7 +966,7 @@ class HomeController extends Controller
 
 
         $json = json_decode($campaign->json_data); // object
-        // $json = json_decode(file_get_contents(base_path('resources/views/templates/landingpages/page1.json'))); // object
+        // $json = json_decode(file_get_contents(base_path('resources/views/templates/landingpages/seldom_zaynah_eid.json'))); // object
 
         $data = $json->sections ?? [];
         // dd($data);

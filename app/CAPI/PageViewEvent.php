@@ -3,7 +3,6 @@
 namespace App\CAPI;
 
 use App\Helper\Convert;
-use Illuminate\Support\Facades\Http;
 
 class PageViewEvent
 {
@@ -67,7 +66,7 @@ class PageViewEvent
         $this->event_id = time() . '_' . uniqid();
         //user data
         $user = data_get($this->master_dl, 'user', []);
-        $this->customer_id = data_get($user,'id',null);
+        $this->customer_id = data_get($user, 'id', null);
 
         $map = [
             'first_name' => 'first_name',
@@ -152,8 +151,6 @@ class PageViewEvent
         }
 
         return $payload;
-
-
     }
 
     public function browserEventPayload(): array
@@ -173,23 +170,4 @@ window.dataLayer.push(' . json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UN
 </script>';
     }
 
-    public function sendServerSide(): array
-    {
-
-
-
-
-        $url = "https://graph.facebook.com/v23.0/{$this->pixel_id}/events";
-
-        $response = Http::post($url, array_merge($payload, [
-            'access_token' => $this->access_token,
-        ]));
-
-
-        return [
-            'ok' => $response->successful(),
-            'status' => $response->status(),
-            'response' => $response->json(),
-        ];
-    }
 }

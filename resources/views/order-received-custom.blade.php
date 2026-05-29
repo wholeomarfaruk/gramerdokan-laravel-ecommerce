@@ -4,9 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Seldom Fashion</title>
+    <title>{{ $site['site_name'] ?? 'Gramer Dokan' }}</title>
     <!-- Favicon -->
+    @if(!empty($site['favicon']))
+    <link rel="icon" type="image/png" href="{{ asset('storage/' . $site['favicon']) }}">
+    @else
     <link rel="icon" type="image/png" href="{{ asset('frontend/img/seldom-rounded.png') }}">
+    @endif
     <!-- font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
@@ -166,8 +170,12 @@
 
             <div class="container">
                 <a class="navbar-brand" href="/">
-                    <img src="{{ asset('frontend/img/logo-transparent.png') }}" alt="" style="width:50px; ">
-                    Seldom Fashion</a>
+                    @if(!empty($site['header_logo']))
+                    <img src="{{ asset('storage/' . $site['header_logo']) }}" alt="{{ $site['site_name'] ?? '' }}" style="width:50px;">
+                    @else
+                    <img src="{{ asset('frontend/img/logo-transparent.png') }}" alt="" style="width:50px;">
+                    @endif
+                    {{ $site['site_name'] ?? 'Gramer Dokan' }}</a>
                 <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -249,7 +257,7 @@
                     <hr class="m-0">
                     @foreach ($orderItems as $item)
                         <div class="d-flex order-card p-2">
-                            <img src="{{ asset('storage/images/products/thumbnails/' . $item->product->image) }}"
+                            <img src="{{ $item->product->getImageThumbUrl() ?? '' }}"
                                 alt="" class="me-2" />
                             <div class="">
                                 <h5 class="order-product-name">{{ $item->product->name }}</h5>

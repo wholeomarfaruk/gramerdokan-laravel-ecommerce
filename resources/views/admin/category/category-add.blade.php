@@ -19,8 +19,7 @@
         <div class="wg-box">
             <form class="form-new-product form-style-1"
                   action="{{ route('admin.categories.store') }}"
-                  method="POST"
-                  enctype="multipart/form-data">
+                  method="POST">
                 @csrf
 
                 {{-- Name --}}
@@ -116,13 +115,25 @@
                     @enderror
                 </fieldset>
 
-                {{-- Image (FilePond) --}}
+                {{-- Category Image --}}
                 <fieldset class="col-upload">
                     <div class="body-title">Category Image</div>
-                    <input type="file" id="categoryImage" name="image" accept="image/*">
+                    <input type="hidden" name="image" id="cat_image_url" value="{{ old('image') }}">
                     @error('image')
-                        <span class="invalid-feedback d-block mt-1"><strong>{{ $message }}</strong></span>
+                        <span class="invalid-feedback d-block mb-2"><strong>{{ $message }}</strong></span>
                     @enderror
+                    <div id="cat_image_preview" style="{{ old('image') ? '' : 'display:none;' }} margin-bottom:10px;">
+                        <img id="cat_image_preview_img" src="{{ old('image') }}"
+                             style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;display:block;margin-bottom:6px;">
+                        <button type="button" id="cat_image_remove" class="tf-button style-1" style="font-size:12px;padding:4px 12px;">
+                            <i class="icon-x"></i> Remove
+                        </button>
+                    </div>
+                    <button type="button" id="cat_image_pick" class="tf-button style-1"
+                            style="{{ old('image') ? 'display:none;' : '' }}"
+                            onclick="Livewire.dispatch('open-media-picker', { multiple: false, callbackKey: 'cat_image' })">
+                        <i class="icon-image"></i> Choose from Media Library
+                    </button>
                 </fieldset>
 
                 <div class="bot">
@@ -134,6 +145,8 @@
 
     </div>
 </div>
+
+@livewire('admin.media.media-picker')
 @endsection
 
 @push('scripts')
@@ -146,6 +159,22 @@ function autoSlug(val) {
     document.getElementById('slug_input').value = slug;
 }
 
-createFilePond('categoryImage', { allowMultiple: false });
+window.addEventListener('media-picker-confirmed', e => {
+    const payload = e.detail[0] ?? e.detail;
+    if (payload.callbackKey !== 'cat_image') return;
+    const single = payload.single;
+    if (!single) return;
+    document.getElementById('cat_image_url').value          = single.url;
+    document.getElementById('cat_image_preview_img').src    = single.thumbnail || single.url;
+    document.getElementById('cat_image_preview').style.display = '';
+    document.getElementById('cat_image_pick').style.display    = 'none';
+});
+
+document.getElementById('cat_image_remove').addEventListener('click', () => {
+    document.getElementById('cat_image_url').value              = '';
+    document.getElementById('cat_image_preview_img').src        = '';
+    document.getElementById('cat_image_preview').style.display  = 'none';
+    document.getElementById('cat_image_pick').style.display     = '';
+});
 </script>
 @endpush

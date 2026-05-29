@@ -47,6 +47,8 @@
 
 /* ─── Color accents per section ─────────────────────────────────────── */
 .lpe-accent-seo       { background:#eff6ff; color:#2377FC; }
+.lpe-accent-nav       { background:#f0fdf4; color:#059669; }
+.lpe-accent-features  { background:#fff7ed; color:#d97706; }
 .lpe-accent-hero      { background:#fdf4ff; color:#9333ea; }
 .lpe-accent-contact   { background:#f0fdf4; color:#16a34a; }
 .lpe-accent-videos    { background:#fff7ed; color:#ea580c; }
@@ -66,15 +68,17 @@
     @php
         $sectionIcons = [
             'seo'          => 'icon-search',
+            'nav'          => 'icon-menu',
             'hero'         => 'icon-layout',
             'contact'      => 'icon-phone',
+            'features'     => 'icon-star',
             'videos'       => 'icon-play-circle',
             'strip_images' => 'icon-image',
             'testimonials' => 'icon-star',
             'packages'     => 'icon-package',
             'footer'       => 'icon-sidebar',
         ];
-        $imageKeys = ['src','logo_url','bg_url','meta_image','favicon_url','image_url','photo_url','img_url','banner_url'];
+        $imageKeys = ['src','logo_url','bg_url','meta_image','favicon_url','image_url','photo_url','img_url','banner_url','image','thumbnail','thumbnail2'];
     @endphp
 
     {{-- ── Page Header ───────────────────────────────────────────────── --}}
@@ -93,6 +97,15 @@
             <a href="{{ route('admin.campaigns') }}" class="lpe-btn secondary">
                 <i class="icon-arrow-left"></i> Back
             </a>
+            <form action="{{ route('admin.campaigns.landingpage.sync', $campaign->id) }}"
+                  method="POST" style="display:inline;"
+                  onsubmit="return confirm('Sync fields from the source template?\n\nYour existing data will be preserved. New blank fields will be added.');">
+                @csrf
+                <button type="submit" class="lpe-btn secondary"
+                        title="Pull new fields from the source template (preserves existing data)">
+                    <i class="icon-refresh-cw"></i> Sync Template
+                </button>
+            </form>
             <button form="landingPageForm" type="submit" class="lpe-btn primary">
                 <i class="icon-save"></i> Save Changes
             </button>
@@ -109,8 +122,16 @@
         </div>
     @endif
 
+    @if(session('sync_error'))
+        <div class="alert alert-danger mb-4" style="font-size:13px;">
+            <i class="icon-alert-circle" style="margin-right:6px;"></i>{{ session('sync_error') }}
+        </div>
+    @endif
+
     @if(session('status'))
-        <div class="alert alert-success mb-4" style="font-size:13px;">{{ session('status') }}</div>
+        <div class="alert alert-success mb-4" style="font-size:13px;">
+            <i class="icon-check-circle" style="margin-right:6px;"></i>{{ session('status') }}
+        </div>
     @endif
 
     <form id="landingPageForm" action="{{ route('admin.campaigns.landingpage.update', $campaign->id) }}"

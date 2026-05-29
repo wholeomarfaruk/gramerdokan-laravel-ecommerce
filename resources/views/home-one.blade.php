@@ -1,21 +1,22 @@
 @extends('layouts.app')
-@section('page_title', 'Seldom Fashion | Premium Quality Clothing in Bangladesh')
+@php $_sn = $site['site_name'] ?? 'Gramer Dokan'; $_og = !empty($site['favicon']) ? asset('storage/'.$site['favicon']) : asset('frontend/img/seldom-rounded.png'); @endphp
+@section('page_title', $_sn . ' | Premium Quality Clothing in Bangladesh')
 @push('meta')
-    <meta name="description" content="Seldom Fashion - আপনার পছন্দের পোশাকের জন্য সেরা গন্তব্য। Shop premium quality sarees, ethnic wear, and fashion clothing at the best price in Bangladesh.">
+    <meta name="description" content="{{ $_sn }} - আপনার পছন্দের পোশাকের জন্য সেরা গন্তব্য। Shop premium quality sarees, ethnic wear, and fashion clothing at the best price in Bangladesh.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/') }}">
 
     <meta property="og:type"        content="website">
-    <meta property="og:title"       content="Seldom Fashion | Premium Quality Clothing in Bangladesh">
-    <meta property="og:description" content="Seldom Fashion - আপনার পছন্দের পোশাকের জন্য সেরা গন্তব্য। Shop premium quality sarees, ethnic wear, and fashion clothing at the best price in Bangladesh.">
-    <meta property="og:image"       content="{{ asset('frontend/img/seldom-rounded.png') }}">
+    <meta property="og:title"       content="{{ $_sn }} | Premium Quality Clothing in Bangladesh">
+    <meta property="og:description" content="{{ $_sn }} - আপনার পছন্দের পোশাকের জন্য সেরা গন্তব্য। Shop premium quality sarees, ethnic wear, and fashion clothing at the best price in Bangladesh.">
+    <meta property="og:image"       content="{{ $_og }}">
     <meta property="og:url"         content="{{ url('/') }}">
-    <meta property="og:site_name"   content="Seldom Fashion">
+    <meta property="og:site_name"   content="{{ $_sn }}">
 
     <meta name="twitter:card"        content="summary_large_image">
-    <meta name="twitter:title"       content="Seldom Fashion | Premium Quality Clothing in Bangladesh">
+    <meta name="twitter:title"       content="{{ $_sn }} | Premium Quality Clothing in Bangladesh">
     <meta name="twitter:description" content="Shop premium quality sarees, ethnic wear, and fashion clothing at the best price in Bangladesh.">
-    <meta name="twitter:image"       content="{{ asset('frontend/img/seldom-rounded.png') }}">
+    <meta name="twitter:image"       content="{{ $_og }}">
 @endpush
 
 @section('content')
@@ -23,17 +24,15 @@
         <!--banner start-->
         @if($slides->count() > 0)
         <section class="hero-slider">
-            <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div id="heroCarousel" class="carousel slide carousel-fade container" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     @foreach ($slides as $slide)
-
-
-                    <div class="carousel-item active">
+                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                         <div class="d-block w-100 hero-slide">
-                            <img src="{{ asset('storage/images/slides/'.$slide?->image) }}" alt="">
+                            <img src="{{ $slide->getImageUrl() ?? '' }}" alt="{{ $slide->title ?? '' }}">
                         </div>
                     </div>
-                     @endforeach
+                    @endforeach
                     {{-- <div class="carousel-item">
                         <div class="d-block w-100 hero-slide"
                             style="background-image: url('{{ asset('frontend/img/banner/main_banner2.jpeg') }}');">
@@ -187,7 +186,7 @@
 
                             <div class="p-img-box">
                                 <a href="{{ $product->url }}">
-                                    <img src="{{ asset('storage/images/products/' . $product->image) }}" alt="">
+                                    <img src="{{ $product->getImageFullUrl() ?? '' }}" alt="">
                                 </a>
                             </div>
                             <div class="p-info">
@@ -253,7 +252,7 @@
 
                                     <div class="p-img-box">
                                         <a href="{{ $product?->url }}">
-                                            <img src="{{ asset('storage/images/products/' . $product->image) }}"
+                                            <img src="{{ $product->getImageFullUrl() ?? '' }}"
                                                 alt="">
                                         </a>
                                     </div>
@@ -299,7 +298,7 @@
     @endforeach
 
     {{-- @if (true) --}}
-    @if (isset($slides) && $slides->count() > 0)
+    {{-- @if (isset($slides) && $slides->count() > 0)
         <section id="reviews">
             <div class="container">
                 <div class="sec-header">
@@ -315,7 +314,7 @@
                             <!-- Slides -->
                             @foreach ($slides as $review)
                                 <div class="swiper-slide">
-                                    <img src="{{ asset('storage/images/slides/' . $review->image) }}" class="d-block w-100"
+                                    <img src="{{ $review->getImageUrl() ?? '' }}" class="d-block w-100"
                                         alt="...">
                                 </div>
                             @endforeach
@@ -331,7 +330,7 @@
                 </div>
             </div>
         </section>
-    @endif
+    @endif --}}
     <section id="faq" class=" mb-3">
         <div class="container">
 

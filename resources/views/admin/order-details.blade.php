@@ -152,7 +152,7 @@
                                         <td>
                                             <div class="flex items-center gap10">
                                                 @if($item->product)
-                                                    <img src="{{ asset('storage/images/products/thumbnails/' . $item->product->image) }}"
+                                                    <img src="{{ $item->product->getImageThumbUrl() ?? asset('frontend/img/logo-transparent.png') }}"
                                                          alt="{{ $item->product->name }}"
                                                          class="od-product-thumb">
                                                     <div>
@@ -514,7 +514,7 @@
                                 <div id="product-item-{{ $item->product->id }}" class="product-item border rounded bg-light p-3 mb-3">
                                     <div class="row align-items-center text-center text-md-start">
                                         <div class="col-12 col-md-2 mb-2 mb-md-0">
-                                            <img src="/storage/images/products/{{ $item->product->image }}"
+                                            <img src="{{ $item->product->getImageFullUrl() ?? '' }}"
                                                  alt="{{ $item->product->name }}" class="img-fluid rounded"
                                                  style="max-height:80px;object-fit:cover;">
                                         </div>
@@ -646,7 +646,7 @@ productSelect.addEventListener('change', function () {
         <div id="product-item-${product.id}" class="product-item border rounded bg-light p-3 mb-3">
             <div class="row align-items-center text-center text-md-start">
                 <div class="col-12 col-md-2 mb-2 mb-md-0">
-                    <img src="/storage/images/products/${product.image}" alt="${product.name}"
+                    <img src="${product.image && (product.image.startsWith('http') || product.image.startsWith('/')) ? product.image : '/storage/images/products/' + product.image}" alt="${product.name}"
                          class="img-fluid rounded" style="max-height:80px;object-fit:cover;">
                 </div>
                 <div class="col-12 col-md-3 mb-2 mb-md-0">

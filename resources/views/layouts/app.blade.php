@@ -4,11 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('page_title', 'Seldom Fashion')</title>
+    <title>@yield('page_title', $site['site_name'] ?? 'Seldom Fashion')</title>
     @yield('meta_data')
     @stack('meta')
     <!-- Favicon -->
+    @if(!empty($site['favicon']))
+    <link rel="icon" type="image/png" href="{{ asset('storage/' . $site['favicon']) }}">
+    @else
     <link rel="icon" type="image/png" href="{{ asset('frontend/img/seldom-rounded.png') }}">
+    @endif
     <!-- font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
@@ -92,7 +96,7 @@
                 };
 
 
-                ttq.load('D6IQ9H3C77U5KIUERMS0');
+                ttq.load('{{ config('conversionapi.tiktok_pixel_id') }}');
                 ttq.page();
             }(window, document, 'ttq');
         </script>
@@ -112,7 +116,7 @@
                 j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
                 f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', 'GTM-5XWHPZQH');
+            })(window, document, 'script', 'dataLayer', '{{ config('conversionapi.gtm_id') }}');
         </script>
         <!-- End Google Tag Manager -->
     @else
@@ -124,7 +128,7 @@
     @if (app()->environment('production'))
         <!-- Production Environment -->
         <!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5XWHPZQH" height="0" width="0"
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('conversionapi.gtm_id') }}" height="0" width="0"
                 style="display:none;visibility:hidden"></iframe></noscript>
         <!-- End Google Tag Manager (noscript) -->
     @else
@@ -152,7 +156,11 @@
             <nav class="navbar navbar-expand-lg">
                 <div class="container">
                     <a class="navbar-brand logo" href="/">
-                        <img src="{{ asset('frontend/img/logo/logo.png') }}" class="w-100" alt="Green Leave">
+                        @if(!empty($site['header_logo']))
+                        <img src="{{ asset('storage/' . $site['header_logo']) }}" class="w-100" alt="{{ $site['site_name'] ?? '' }}">
+                        @else
+                        <img src="{{ asset('frontend/img/logo/logo.png') }}" class="w-100" alt="">
+                        @endif
                     </a>
 
                     <div class="justify-content-center collapse navbar-collapse nav_search" id="navbarSupportedContent">
@@ -240,9 +248,15 @@
             <div class="row">
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <div class="footer_item">
-                        <img class="w-100" src="{{ asset('frontend/img/logo/logo.png') }}" alt="Green Leaves">
-                        <h2>Green Leaves Bangladesh</h2>
-                        <p>Green Leaves Bangladesh একটি জনপ্রিয় কোম্পানি, যেখানে বিভিন্ন ধরনের খাদ্য পণ্য পাওয়া যায়। এখানে সাশ্রয়ী মূল্যে ভালো মানের পণ্য সরবরাহ করা হয়।</p>
+                        @if(!empty($site['footer_logo']))
+                        <img class="w-100" src="{{ asset('storage/' . $site['footer_logo']) }}" alt="{{ $site['site_name'] ?? '' }}">
+                        @else
+                        <img class="w-100" src="{{ asset('frontend/img/logo/logo.png') }}" alt="">
+                        @endif
+                        <h2>{{ $site['site_name'] ?? 'Seldom Fashion' }}</h2>
+                        @if(!empty($site['footer_description']))
+                        <p>{{ $site['footer_description'] }}</p>
+                        @endif
                         <a href="https://www.facebook.com/greenleavesbd0" class="social_icon"
                             style="text-decoration:none;" target="_blank">
                             <i class="fa-brands fa-square-facebook" style="color: rgb(24, 119, 242);"></i>

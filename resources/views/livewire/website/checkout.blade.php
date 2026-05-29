@@ -157,7 +157,7 @@
                             <div data-checkout-items>
                                 @foreach ($cartData->items as $item)
                                     <div class="d-flex gap-3 py-3 border-bottom">
-                                        <img src="{{ asset('storage/images/products/' . $item->product->image) }}"
+                                        <img src="{{ $item->product->getImageFullUrl() ?? '' }}"
                                             alt="{{ $item->product?->name }}"
                                             width="72"
                                             height="72"

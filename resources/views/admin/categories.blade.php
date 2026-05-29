@@ -62,7 +62,9 @@
                                     <td>{{ $category->id }}</td>
                                     <td class="pname">
                                         <div class="image">
-                                            <img src="{{ asset('storage/images/categories/') . '/' . $category->image }}" alt="" class="image">
+                                            @if ($category->getImageUrl())
+                                                <img src="{{ $category->getImageUrl() }}" alt="" class="image">
+                                            @endif
                                         </div>
                                         <div class="name">
                                             <a href="#" class="body-title-2">{{ $category->name }}</a>

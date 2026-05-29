@@ -285,7 +285,7 @@
                 <div class="row align-items-center text-center text-md-start">
                     <!-- 1️⃣ Image -->
                     <div class="col-12 col-md-2 mb-2 mb-md-0">
-                        <img src="/storage/images/products/${product.image}" alt="${product.name}"
+                        <img src="${product.image && (product.image.startsWith('http') || product.image.startsWith('/')) ? product.image : '/storage/images/products/' + product.image}" alt="${product.name}"
                              class="img-fluid rounded" style="max-height: 80px; object-fit: cover;">
                     </div>
 
