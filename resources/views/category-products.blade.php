@@ -32,19 +32,19 @@
 
     <section class="sec-style-1 my-3">
         <div class="container">
-            <div class="sec-header">
+            {{-- <div class="sec-header">
                 @if ($category->image)
                     <img src="{{ $category->getImageUrl() ?? '' }}"
                          alt="{{ $category->name }}"
                          class="w-100 rounded"
                          style="max-height:320px;object-fit:cover;display:block;">
                 @endif
-                {{-- title hidden temporarily --}}
+      
                 <div class="d-none justify-content-center align-items-center bg-primary-color rounded" style="min-height:100px;">
                     <h2 class="sec-title text-white fs-1" style="text-transform:uppercase;">{{ $category->name }}</h2>
                 </div>
                 <hr class="divider mt-0 text-primary-color bg-primary-color" style="height:2px;">
-            </div>
+            </div> --}}
             <div class="sec-body">
                 <div class="sec-grid-box">
                     @forelse ($products as $product)

@@ -69,6 +69,17 @@
                     </div>
                 </fieldset>
 
+                {{-- Homepage Category Box --}}
+                <fieldset class="name">
+                    <div class="body-title">Show as Homepage Category Box</div>
+                    <div class="select flex-grow">
+                        <select name="homepage_category">
+                            <option value="0" {{ old('homepage_category', $category->homepage_category) == 0 ? 'selected' : '' }}>No</option>
+                            <option value="1" {{ old('homepage_category', $category->homepage_category) == 1 ? 'selected' : '' }}>Yes</option>
+                        </select>
+                    </div>
+                </fieldset>
+
                 {{-- Show in Menu --}}
                 <fieldset class="name">
                     <div class="body-title">Show in Menu</div>

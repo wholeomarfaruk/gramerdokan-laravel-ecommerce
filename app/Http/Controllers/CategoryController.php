@@ -75,9 +75,10 @@ class CategoryController extends Controller
         $category->image            = $request->filled('image') ? $request->image : null;
         $category->parent_id        = $request->parent_id ?: null;
         $category->description      = $request->description;
-        $category->is_homepage_show = $request->is_homepage_show ?? 0;
-        $category->is_show_in_menu  = $request->is_show_in_menu ?? 0;
-        $category->display_order    = $request->display_order ?? 0;
+        $category->is_homepage_show  = $request->is_homepage_show ?? 0;
+        $category->homepage_category = $request->homepage_category ?? 0;
+        $category->is_show_in_menu   = $request->is_show_in_menu ?? 0;
+        $category->display_order     = $request->display_order ?? 0;
         $category->save();
 
         return redirect()->route('admin.categories')->with('success', 'Category added successfully');
@@ -145,9 +146,10 @@ class CategoryController extends Controller
             'image'           => $imageName,
             'parent_id'       => $request->parent_id ?: null,
             'description'     => $request->description,
-            'is_homepage_show'=> $request->is_homepage_show ?? 0,
-            'display_order'   => $request->display_order ?? 0,
-            'is_show_in_menu' => $request->is_show_in_menu ?? 0,
+            'is_homepage_show'  => $request->is_homepage_show ?? 0,
+            'homepage_category' => $request->homepage_category ?? 0,
+            'display_order'     => $request->display_order ?? 0,
+            'is_show_in_menu'   => $request->is_show_in_menu ?? 0,
         ]);
 
         return redirect()->route('admin.categories')->with('success', 'Category updated successfully');

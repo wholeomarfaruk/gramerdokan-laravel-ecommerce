@@ -52,6 +52,10 @@ class HomeController extends Controller
         $slides = Slide::all();
         $analytics = Analytic::all();
         $categories = Category::where('is_active', true)->orderBy('display_order')->get();
+        $homepage_categories = Category::where('is_active', true)
+            ->where('homepage_category', true)
+            ->orderBy('display_order')
+            ->get();
         if (request()->boolean('debug_meta')) {
             $metaBaseData = new MetaBaseData();
 
@@ -73,7 +77,7 @@ class HomeController extends Controller
             ]);
         }
 
-        return view('home-one', compact('products', 'deliveryAreas', 'slides', 'analytics', 'categories'));
+        return view('home-one', compact('products', 'deliveryAreas', 'slides', 'analytics', 'categories', 'homepage_categories'));
     }
     public function shop()
     {

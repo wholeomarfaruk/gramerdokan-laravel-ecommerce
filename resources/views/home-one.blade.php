@@ -59,6 +59,7 @@
         @endif
         <!--banner end-->
         <!--our Category start-->
+        @if($homepage_categories->count() > 0)
         <section class="our_category">
             <div class="container">
                 <div class="row">
@@ -69,99 +70,27 @@
                     </div>
                 </div>
                 <div class="row">
+                    @foreach($homepage_categories as $cat)
                     <div class="col-lg-2 col-6">
                         <div class="category_box">
                             <div class="category_box1">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/img/category/baking_powder.jpeg') }}" class="w-100"
-                                        alt="Green Leaves">
+                                <a href="{{ route('category.show', $cat->slug) }}">
+                                    <img src="{{ $cat->getImageUrl() ?? asset('frontend/img/category/default.jpeg') }}"
+                                         class="w-100" alt="{{ $cat->name }}">
                                 </a>
                             </div>
                             <div class="category_box2">
-                                <a href="#">
-                                    <p>Bakery Item</p>
+                                <a href="{{ route('category.show', $cat->slug) }}">
+                                    <p>{{ $cat->name }}</p>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-6">
-                        <div class="category_box">
-                            <div class="category_box1">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/img/category/strawberry_jelly.jpeg') }}"
-                                        class="w-100" alt="Green Leaves">
-                                </a>
-                            </div>
-                            <div class="category_box2">
-                                <a href="#">
-                                    <p>Food Item</p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-6">
-                        <div class="category_box">
-                            <div class="category_box1">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/img/category/biriyani_masala.jpeg') }}"
-                                        class="w-100" alt="Green Leaves">
-                                </a>
-                            </div>
-                            <div class="category_box2">
-                                <a href="#">
-                                    <p>Masala</p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-6">
-                        <div class="category_box">
-                            <div class="category_box1">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/img/category/soya_sauce.jpeg') }}" class="w-100"
-                                        alt="Green Leaves">
-                                </a>
-                            </div>
-                            <div class="category_box2">
-                                <a href="#">
-                                    <p>Cooking Item</p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-6">
-                        <div class="category_box">
-                            <div class="category_box1">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/img/category/red_food.jpeg') }}" class="w-100"
-                                        alt="Green Leaves">
-                                </a>
-                            </div>
-                            <div class="category_box2">
-                                <a href="#">
-                                    <p>Food Color</p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-6">
-                        <div class="category_box">
-                            <div class="category_box1">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/img/category/vanilla_essence.jpeg') }}"
-                                        class="w-100" alt="Green Leaves">
-                                </a>
-                            </div>
-                            <div class="category_box2">
-                                <a href="#">
-                                    <p>Food Essence</p>
-                                </a>
-                            </div>
-                        </div>Blush Glow 3 Piece Dress
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>
+        @endif
         <!--our Category end-->
     <section class="sec-style-1 my-3">
         <div class="container">

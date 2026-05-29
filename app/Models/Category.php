@@ -13,6 +13,7 @@ class Category extends Model
         'parent_id',
         'image',
         'is_homepage_show',
+        'homepage_category',
         'display_order',
         'is_show_in_menu',
         'is_active',
